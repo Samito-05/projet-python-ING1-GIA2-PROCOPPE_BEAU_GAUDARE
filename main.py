@@ -1,7 +1,7 @@
 from python.models import Film, Salle, Utilisateur
 from python.visuals import ascii_art, clear_screen
-from python.admin import admin_menu
-from python.user import user_menu
+from python.admin_gui import admin_menu
+from python.user_gui import user_menu
 import storage
 import getpass
 import time
@@ -33,7 +33,7 @@ def menu():
 			input('Appuyez sur Entrée pour revenir au menu...')
 		elif choix == '2':
 			email = input('Email: ')
-			pwd = getpass.getpass('Mot de passe: ')
+			pwd = getpass.getpass('Mot de passe (caché): ')
 			u = storage.authenticate_user(email, pwd)
 			if u:
 				print(f'Authentification réussie. Bonjour {u.prenom} {u.nom} (role={u.role})')
@@ -47,7 +47,7 @@ def menu():
 			prenom = input('Prénom: ')
 			dob = input('Date de naissance (YYYY-MM-DD): ')
 			email = input('Email: ')
-			pwd = getpass.getpass('Mot de passe: ')
+			pwd = getpass.getpass('Mot de passe (caché): ')
 			try:
 				u = storage.create_user(nom=nom, prenom=prenom, date_naissance=dob, email=email, password=pwd)
 				print(f'Compte créé pour {u.email} (id={u.id})')
@@ -57,7 +57,7 @@ def menu():
 				print('Erreur:', e)
 		elif choix == '4':
 			email = input('Email: ')
-			pwd = getpass.getpass('Mot de passe: ')
+			pwd = getpass.getpass('Mot de passe (caché): ')
 			u = storage.authenticate_admin(email, pwd)
 			if u:
 				print(f'Authentification réussie. Bonjour {u.prenom} {u.nom} (role={u.role})')

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-from python.models import Film, Salle, Utilisateur
+from python.models import Film, Salle, Utilisateur, Representation, Reservation
 
 
 DB_PATH = Path(__file__).parent / 'db.json'
@@ -49,6 +49,30 @@ def add_salle(salle: Salle) -> None:
     save_db(db)
 
 
+def list_representations() -> List[Representation]:
+    db = load_db()
+    return [Representation.from_dict(d) for d in db.get('representations', [])]
+
+
+def add_representation(representation: Representation) -> None:
+    db = load_db()
+    db.setdefault('representations', [])
+    db['representations'].append(representation.to_dict())
+    save_db(db)
+
+def assign_representation_to_room(representation_id: str, salle_id: str) -> None:
+    db = load_db()
+    salles = db.get('salles', [])
+    for salle_dict in salles:
+        if salle_dict.get('id') == salle_id:
+            id_representations = salle_dict.get('id_representations', [])
+            if representation_id not in id_representations:
+                id_representations.append(representation_id)
+                salle_dict['id_representations'] = id_representations
+            break
+    save_db(db)
+
+    
 def list_utilisateurs() -> List[Utilisateur]:
     db = load_db()
     return [Utilisateur.from_dict(d) for d in db.get('utilisateurs', [])]

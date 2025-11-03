@@ -13,7 +13,16 @@
       "id": "50503ff5-ada2-4794-8edf-7afacca31184"
     }
   ],
-  "salles": [],
+  "salles": [
+    {
+      "numero": 1,
+      "nombre_rangees_total": 22,
+      "nombre_rangees_vip": 2,
+      "nombre_colonnes": 10,
+      "id_representations": [],
+      "id": "d70563c5-26db-4251-afa6-ae176f38ed9e"
+    }
+  ],
   "utilisateurs": [
     {
       "nom": "Procoppe",
@@ -36,6 +45,18 @@
       "password_salt": "732c4d4334bdf99fe9c8afd486315dc0",
       "password_hash": "cb39af6cb6c50a2b4f9f981768011a7931f5a8c9226282ce107bcb72727ce022",
       "id": "9e4d43dd-1d76-4277-bbc9-a2029c194e55"
+    }
+  ],
+  "representations": [
+    {
+      "film_id": "50503ff5-ada2-4794-8edf-7afacca31184",
+      "horaire": "18:00",
+      "id": "50503ff5-ada2-4794-8edf-7afacca31184_18:00"
+    },
+    {
+      "film_id": "50503ff5-ada2-4794-8edf-7afacca31184",
+      "horaire": "15:30",
+      "id": "50503ff5-ada2-4794-8edf-7afacca31184_15:30"
     }
   ],
   "reservations": []

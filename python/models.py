@@ -40,6 +40,7 @@ class Salle:
     nombre_rangees_total: int
     nombre_rangees_vip: int
     nombre_colonnes: int
+    id_representations: List[str] = field(default_factory=list)  # film id + horaire
     id: str = field(default_factory=gen_id)
 
     def to_dict(self) -> dict:
@@ -52,6 +53,7 @@ class Salle:
             nombre_rangees_total=d.get('nombre_rangees_total', 0),
             nombre_rangees_vip=d.get('nombre_rangees_vip', 0),
             nombre_colonnes=d.get('nombre_colonnes', 0),
+            id_representations=d.get('id_representations', []),
             id=d.get('id', gen_id()),
         )
 
@@ -98,6 +100,23 @@ class Utilisateur:
         salt = binascii.unhexlify(self.password_salt)
         key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100_000)
         return binascii.hexlify(key).decode('ascii') == self.password_hash
+    
+@dataclass
+class Representation:
+    film_id: str
+    horaire: str
+    id: str = field(default_factory=gen_id)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @staticmethod
+    def from_dict(d: dict) -> 'Representation':
+        return Representation(
+            film_id=d.get('film_id', ''),
+            horaire=d.get('horaire', ''),
+            id=d.get('id', gen_id()),
+        )
     
 @dataclass
 class Reservation:
