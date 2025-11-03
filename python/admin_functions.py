@@ -94,7 +94,7 @@ def assign_representation_to_room():
         # On récupère le titre du film pour affichage plus clair
         film = storage.get_film(rep.film_id)
         film_titre = film.titre if film else "Film inconnu"
-        print(f"{i}. {film_titre} à {rep.horaire} (ID: {rep.id})")
+        print(f"{i}. {film_titre} à {rep.horaire}")
 
     # Choix de la représentation
     while True:
@@ -116,7 +116,7 @@ def assign_representation_to_room():
 
     print("\nSalles disponibles :")
     for i, salle in enumerate(salles, start=1):
-        print(f"{i}. {salle.nom} (ID: {salle.id})")
+        print(f"{i}. Salle {salle.numero}")
 
     # Choix de la salle
     while True:
@@ -133,6 +133,6 @@ def assign_representation_to_room():
     # Assignation
     storage.assign_representation_to_room(representation.id, salle.id)
 
-    print(f"\n✅ Représentation '{representation.id}' assignée à la salle '{salle.nom}' avec succès.")
+    print(f"\n✅ Représentation '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
     input("\nAppuyez sur Entrée pour revenir au menu...")
 

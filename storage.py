@@ -9,7 +9,13 @@ DB_PATH = Path(__file__).parent / 'db.json'
 
 
 def _empty_db() -> Dict[str, List[Dict[str, Any]]]:
-    return {"films": [], "salles": [], "utilisateurs": [], "reservations": []}
+    return {
+        "films": [],
+        "salles": [],
+        "utilisateurs": [],
+        "representations": [],
+        "reservations": []
+    }
 
 
 def load_db() -> Dict[str, List[Dict[str, Any]]]:
@@ -36,6 +42,12 @@ def add_film(film: Film) -> None:
     db['films'].append(film.to_dict())
     save_db(db)
 
+def get_film(film_id: str) -> Optional[Film]:
+    db = load_db()
+    for film_dict in db.get("films", []):
+        if film_dict.get("id") == film_id:
+            return Film.from_dict(film_dict)
+    return None
 
 def list_salles() -> List[Salle]:
     db = load_db()
