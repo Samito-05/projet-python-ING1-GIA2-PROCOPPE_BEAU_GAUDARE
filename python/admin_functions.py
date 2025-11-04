@@ -1,4 +1,5 @@
-from python.models import Film, Salle, Representation
+from ast import Dict
+from python.models import Film, Salle_info, Representation
 import storage
 
 
@@ -22,7 +23,7 @@ def add_room():
     nombre_rangees_total = int(input("Nombre total de rangées: "))
     nombre_rangees_vip = int(input("Nombre de rangées VIP: "))
     nombre_colonnes = int(input("Nombre de colonnes: "))
-    salle = Salle(numero=numero, nombre_rangees_total=nombre_rangees_total,
+    salle = Salle_info(numero=numero, nombre_rangees_total=nombre_rangees_total,
                     nombre_rangees_vip=nombre_rangees_vip, nombre_colonnes=nombre_colonnes)
     storage.add_salle(salle)
     print(f"Salle numéro {numero} ajoutée avec succès.")
@@ -134,3 +135,5 @@ def assign_representation_to_room():
     print(f"\n✅ Représentation '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
     input("\nAppuyez sur Entrée pour revenir au menu...")
 
+# def make_room_map(representation: Representation) -> Dict[str, str]:
+        

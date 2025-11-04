@@ -1,4 +1,4 @@
-from python.models import Film, Salle, Utilisateur
+from python.models import Film, Salle_info, Utilisateur
 from python.visuals import ascii_art, clear_screen
 from python.admin_gui import admin_menu
 from python.user_gui import user_menu

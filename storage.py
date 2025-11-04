@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-from python.models import Film, Salle_info, Utilisateur, Representation, Reservation
+from python.models import Film, Salle_info, Utilisateur, Representation, Reservation, Salles
 
 
 DB_PATH = Path(__file__).parent / 'db.json'
@@ -11,10 +11,11 @@ DB_PATH = Path(__file__).parent / 'db.json'
 def _empty_db() -> Dict[str, List[Dict[str, Any]]]:
     return {
         "films": [],
-        "salles_info": [],
+        "salle_info": [],
         "utilisateurs": [],
         "representations": [],
-        "reservations": []
+        "reservations": [],
+        "salles": []
     }
 
 
@@ -51,13 +52,13 @@ def get_film(film_id: str) -> Optional[Film]:
 
 def list_salles() -> List[Salle_info]:
     db = load_db()
-    return [Salle_info.from_dict(d) for d in db.get('salles_info', [])]
+    return [Salle_info.from_dict(d) for d in db.get('salle_info', [])]
 
 
 def add_salle(salle: Salle_info) -> None:
     db = load_db()
-    db.setdefault('salles_info', [])
-    db['salles_info'].append(salle.to_dict())
+    db.setdefault('salle_info', [])
+    db['salle_info'].append(salle.to_dict())
     save_db(db)
 
 
@@ -81,7 +82,7 @@ def add_representation(representation: Representation) -> None:
 
 def assign_representation_to_room(representation_id: str, salle_id: str) -> None:
     db = load_db()
-    salles = db.get('salles_info', [])
+    salles = db.get('salle_info', [])
     for salle_dict in salles:
         if salle_dict.get('id') == salle_id:
             id_representations = salle_dict.get('id_representations', [])
