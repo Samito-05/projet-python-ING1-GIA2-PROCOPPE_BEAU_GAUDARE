@@ -1,19 +1,6 @@
 {
-  "films": [
-    {
-      "titre": "Fast n Furious",
-      "duree": 125,
-      "categorie": "Action",
-      "age_min": 12,
-      "horaires": [
-        "15:30",
-        "18:00",
-        "20:15"
-      ],
-      "id": "50503ff5-ada2-4794-8edf-7afacca31184"
-    }
-  ],
-  "salles": [],
+  "films": [],
+  "salle_info": [],
   "utilisateurs": [
     {
       "nom": "Procoppe",
@@ -38,5 +25,6 @@
       "id": "9e4d43dd-1d76-4277-bbc9-a2029c194e55"
     }
   ],
+  "representations": [],
   "reservations": []
 }

@@ -2,14 +2,21 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-from python.models import Film, Salle, Utilisateur
+from python.models import Film, Salle_info, Utilisateur, Representation, Reservation, Salles
 
 
 DB_PATH = Path(__file__).parent / 'db.json'
 
 
 def _empty_db() -> Dict[str, List[Dict[str, Any]]]:
-    return {"films": [], "salles": [], "utilisateurs": [], "reservations": []}
+    return {
+        "films": [],
+        "salle_info": [],
+        "utilisateurs": [],
+        "representations": [],
+        "reservations": [],
+        "salles": []
+    }
 
 
 def load_db() -> Dict[str, List[Dict[str, Any]]]:
@@ -36,19 +43,56 @@ def add_film(film: Film) -> None:
     db['films'].append(film.to_dict())
     save_db(db)
 
-
-def list_salles() -> List[Salle]:
+def get_film(film_id: str) -> Optional[Film]:
     db = load_db()
-    return [Salle.from_dict(d) for d in db.get('salles', [])]
+    for film_dict in db.get("films", []):
+        if film_dict.get("id") == film_id:
+            return Film.from_dict(film_dict)
+    return None
 
-
-def add_salle(salle: Salle) -> None:
+def list_salles() -> List[Salle_info]:
     db = load_db()
-    db.setdefault('salles', [])
-    db['salles'].append(salle.to_dict())
+    return [Salle_info.from_dict(d) for d in db.get('salle_info', [])]
+
+
+def add_salle(salle: Salle_info) -> None:
+    db = load_db()
+    db.setdefault('salle_info', [])
+    db['salle_info'].append(salle.to_dict())
     save_db(db)
 
 
+def list_representations() -> List[Representation]:
+    db = load_db()
+    return [Representation.from_dict(d) for d in db.get('representations', [])]
+
+def get_representation(representation_id: str) -> Optional[Representation]:
+    db = load_db()
+    for rep_dict in db.get("representations", []):
+        if rep_dict.get("id") == representation_id:
+            return Representation.from_dict(rep_dict)
+    return None
+
+
+def add_representation(representation: Representation) -> None:
+    db = load_db()
+    db.setdefault('representations', [])
+    db['representations'].append(representation.to_dict())
+    save_db(db)
+
+def assign_representation_to_room(representation_id: str, salle_id: str) -> None:
+    db = load_db()
+    salles = db.get('salle_info', [])
+    for salle_dict in salles:
+        if salle_dict.get('id') == salle_id:
+            id_representations = salle_dict.get('id_representations', [])
+            if representation_id not in id_representations:
+                id_representations.append(representation_id)
+                salle_dict['id_representations'] = id_representations
+            break
+    save_db(db)
+
+    
 def list_utilisateurs() -> List[Utilisateur]:
     db = load_db()
     return [Utilisateur.from_dict(d) for d in db.get('utilisateurs', [])]
