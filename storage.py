@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-from python.models import Film, Salle, Utilisateur, Representation, Reservation
+from python.models import Film, Salle_info, Utilisateur, Representation, Reservation
 
 
 DB_PATH = Path(__file__).parent / 'db.json'
@@ -11,7 +11,7 @@ DB_PATH = Path(__file__).parent / 'db.json'
 def _empty_db() -> Dict[str, List[Dict[str, Any]]]:
     return {
         "films": [],
-        "salles": [],
+        "salles_info": [],
         "utilisateurs": [],
         "representations": [],
         "reservations": []
@@ -49,21 +49,28 @@ def get_film(film_id: str) -> Optional[Film]:
             return Film.from_dict(film_dict)
     return None
 
-def list_salles() -> List[Salle]:
+def list_salles() -> List[Salle_info]:
     db = load_db()
-    return [Salle.from_dict(d) for d in db.get('salles', [])]
+    return [Salle_info.from_dict(d) for d in db.get('salles_info', [])]
 
 
-def add_salle(salle: Salle) -> None:
+def add_salle(salle: Salle_info) -> None:
     db = load_db()
-    db.setdefault('salles', [])
-    db['salles'].append(salle.to_dict())
+    db.setdefault('salles_info', [])
+    db['salles_info'].append(salle.to_dict())
     save_db(db)
 
 
 def list_representations() -> List[Representation]:
     db = load_db()
     return [Representation.from_dict(d) for d in db.get('representations', [])]
+
+def get_representation(representation_id: str) -> Optional[Representation]:
+    db = load_db()
+    for rep_dict in db.get("representations", []):
+        if rep_dict.get("id") == representation_id:
+            return Representation.from_dict(rep_dict)
+    return None
 
 
 def add_representation(representation: Representation) -> None:
@@ -74,7 +81,7 @@ def add_representation(representation: Representation) -> None:
 
 def assign_representation_to_room(representation_id: str, salle_id: str) -> None:
     db = load_db()
-    salles = db.get('salles', [])
+    salles = db.get('salles_info', [])
     for salle_dict in salles:
         if salle_dict.get('id') == salle_id:
             id_representations = salle_dict.get('id_representations', [])

@@ -29,17 +29,14 @@ def add_room():
     input("Appuyez sur Entrée pour revenir au menu...")
 
 def add_representation():
-    """Liste numérotée des films et de leurs horaires pour créer une représentation."""
     films = storage.list_films()
     if not films:
         print("Aucun film disponible.")
         return
-
     print("\nFilms disponibles :")
     for i, film in enumerate(films, start=1):
         print(f"{i}. {film.titre}")
 
-    # Choix du film
     while True:
         try:
             choix_film = int(input("\nEntrez le numéro du film : "))
@@ -51,7 +48,6 @@ def add_representation():
         except ValueError:
             print("Veuillez entrer un nombre valide.")
 
-    # Récupération des horaires depuis le film choisi
     horaires = getattr(film, "horaires", [])
     if not horaires:
         print(f"\nAucun horaire disponible pour le film '{film.titre}'.")
@@ -61,7 +57,6 @@ def add_representation():
     for i, h in enumerate(horaires, start=1):
         print(f"{i}. {h}")
 
-    # Choix de l’horaire
     while True:
         try:
             choix_h = int(input("\nEntrez le numéro de l’horaire : "))
@@ -73,8 +68,11 @@ def add_representation():
         except ValueError:
             print("Veuillez entrer un nombre valide.")
 
-    # Création et enregistrement de la représentation
     representation_id = f"{film.id}_{horaire}"
+    if storage.get_representation(representation_id):
+        print(f"\n❌ La représentation pour '{film.titre}' à {horaire} existe déjà.")
+        input("\nAppuyez sur Entrée pour revenir au menu...")
+        return
     representation = Representation(film_id=film.id, horaire=horaire, id=representation_id)
     storage.add_representation(representation)
 
