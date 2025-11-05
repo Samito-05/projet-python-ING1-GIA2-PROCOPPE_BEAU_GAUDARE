@@ -14,12 +14,12 @@
       "id": "bdc6efff-293d-43fb-9895-c1971972f318"
     },
     {
-      "nom": "Beau",
-      "prenom": "Alexis",
+      "nom": "beau",
+      "prenom": "alexis",
       "date_naissance": "2005-11-28",
       "nombre_resa": 0,
       "role": "client",
-      "email": "alexis@gmail.com",
+      "email": "alexis",
       "password_salt": "732c4d4334bdf99fe9c8afd486315dc0",
       "password_hash": "cb39af6cb6c50a2b4f9f981768011a7931f5a8c9226282ce107bcb72727ce022",
       "id": "9e4d43dd-1d76-4277-bbc9-a2029c194e55"
