@@ -1,4 +1,5 @@
 from ast import Dict
+from datetime import datetime, timedelta
 from python.models import Film, Salle_info, Representation
 import storage
 
@@ -29,10 +30,17 @@ def add_room():
     print(f"Salle numéro {numero} ajoutée avec succès.")
     input("Appuyez sur Entrée pour revenir au menu...")
 
+
+def calculer_heure_fin(horaire_debut: str, duree: int) -> str:
+    debut = datetime.strptime(horaire_debut, "%H:%M")
+    fin = debut + timedelta(minutes=duree)
+    return fin.strftime("%H:%M")
+
 def add_representation():
     films = storage.list_films()
     if not films:
         print("Aucun film disponible.")
+        input("\nAppuyez sur Entrée pour revenir au menu...")
         return
     print("\nFilms disponibles :")
     for i, film in enumerate(films, start=1):
@@ -69,12 +77,13 @@ def add_representation():
         except ValueError:
             print("Veuillez entrer un nombre valide.")
 
-    representation_id = f"{film.id}_{horaire}"
+    horaire_fin=calculer_heure_fin(horaire, film.duree)
+    representation_id = f"{film.id}_{horaire}_{horaire_fin}"
     if storage.get_representation(representation_id):
         print(f"\n❌ La représentation pour '{film.titre}' à {horaire} existe déjà.")
         input("\nAppuyez sur Entrée pour revenir au menu...")
         return
-    representation = Representation(film_id=film.id, horaire=horaire, id=representation_id)
+    representation = Representation(film_id=film.id, horaire=horaire, id=representation_id, horaire_fin=horaire_fin)
     storage.add_representation(representation)
 
     print(f"\n✅ Représentation '{representation_id}' ajoutée avec succès pour '{film.titre}' à {horaire}.")
@@ -86,6 +95,7 @@ def assign_representation_to_room():
     representations = storage.list_representations()
     if not representations:
         print("Aucune représentation disponible.")
+        input("\nAppuyez sur Entrée pour revenir au menu...")
         return
 
     print("\nReprésentations disponibles :")
@@ -111,6 +121,7 @@ def assign_representation_to_room():
     salles = storage.list_salles()
     if not salles:
         print("Aucune salle disponible.")
+        input("\nAppuyez sur Entrée pour revenir au menu...")
         return
 
     print("\nSalles disponibles :")

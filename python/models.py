@@ -105,6 +105,7 @@ class Utilisateur:
 class Representation:
     film_id: str
     horaire: str
+    horaire_fin: str
     id: str = field(default_factory=gen_id)
 
     def to_dict(self) -> dict:
@@ -115,6 +116,7 @@ class Representation:
         return Representation(
             film_id=d.get('film_id', ''),
             horaire=d.get('horaire', ''),
+            horaire_fin=d.get('horaire_fin', ''),
             id=d.get('id', gen_id()),
         )
     
