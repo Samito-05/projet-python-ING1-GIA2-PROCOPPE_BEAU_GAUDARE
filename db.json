@@ -1,5 +1,14 @@
 {
-  "films": [],
+  "films": [
+    {
+      "titre": "Shrek",
+      "duree": 100,
+      "categorie": "Comédie",
+      "age_min": 5,
+      "horaires": [],
+      "id": 23
+    }
+  ],
   "salle_info": [],
   "utilisateurs": [
     {
@@ -23,6 +32,17 @@
       "password_salt": "732c4d4334bdf99fe9c8afd486315dc0",
       "password_hash": "cb39af6cb6c50a2b4f9f981768011a7931f5a8c9226282ce107bcb72727ce022",
       "id": "9e4d43dd-1d76-4277-bbc9-a2029c194e55"
+    },
+    {
+      "nom": "gaudaré",
+      "prenom": "elias",
+      "date_naissance": "2004-10-01",
+      "nombre_resa": 0,
+      "role": "client",
+      "email": "elias@prout.com",
+      "password_salt": "6333fa5bd96797dcda7492414270abd2",
+      "password_hash": "ebe86a976bf152ef9ae86bd49f128dd0b7e043448f890a83e34f899806cad4ef",
+      "id": "bfc3f29a-4859-4e51-a395-d8cff15b5c87"
     }
   ],
   "representations": [],

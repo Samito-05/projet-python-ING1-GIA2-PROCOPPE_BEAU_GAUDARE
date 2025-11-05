@@ -1,18 +1,18 @@
-from python.models import Film, Salle_info, Utilisateur
-from python.visuals import ascii_art, clear_screen
+from PyQt6.QtWidgets import QMessageBox, QInputDialog
 import storage
 
 def list_films():
     films = storage.list_films()
     if not films:
-        print("\n")
-        print("Aucun film.")
+        QMessageBox.information(None, "Films", "Aucun film.")
+        return
+
+    msg = ""
     for f in films:
-        print(f"- {f.titre} ({f.duree}min) [{f.categorie}] Age minimum={f.age_min} ")
-    print("\n")
-    input("Appuyez sur Entrée pour revenir au menu...")
+        msg += f"- {f.titre} ({f.duree} min) [{f.categorie}] Age min={f.age_min}\n"
+
+    QMessageBox.information(None, "Films Disponibles", msg)
+
 
 def buy_ticket():
-    print("Fonctionnalité de réservation de salle à implémenter.")
-    input("Appuyez sur Entrée pour revenir au menu...")
-
+    QMessageBox.information(None, "Réservation", "Fonctionnalité de réservation de salle à implémenter.")
