@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt
 import sys
 import storage
 from python.user_gui import UserMenu
-# from admin_menu_gui import AdminMenu  # when you convert admin menu
+from python.admin_gui import AdminMenu
 
 class MainMenu(QWidget):
     def __init__(self, storage):
@@ -62,10 +62,12 @@ class MainMenu(QWidget):
         u = self.storage.authenticate_user(email, pwd)
         if u:
             QMessageBox.information(self, "Bienvenue", f"{u.prenom} {u.nom}")
-            win = UserMenu(u)
-            win.show()
+            self.user_window = UserMenu(u)
+            self.user_window.show()
+
         else:
             QMessageBox.warning(self, "Erreur", "Identifiants invalides.")
+
 
     def create_user(self):
         nom, ok = QInputDialog.getText(self, "Création", "Nom :")
@@ -93,17 +95,20 @@ class MainMenu(QWidget):
             QMessageBox.warning(self, "Erreur", str(e))
 
     def login_admin(self):
-        email, ok = QInputDialog.getText(self, "Admin", "Email :")
+        email, ok = QInputDialog.getText(self, "Administration", "Email :")
         if not ok or not email:
             return
-        pwd, ok = QInputDialog.getText(self, "Admin", "Mot de passe :", echo=QLineEdit.EchoMode.Password)
+
+        pwd, ok = QInputDialog.getText(self, "Administration", "Mot de passe :", echo=QLineEdit.EchoMode.Password)
         if not ok:
             return
 
         u = self.storage.authenticate_admin(email, pwd)
         if u:
             QMessageBox.information(self, "Bienvenue", f"{u.prenom} {u.nom} (Admin)")
-            # win = AdminMenu(u)  # once admin menu GUI exists
-            # win.show()
+
+            self.admin_window = AdminMenu(u)
+            self.admin_window.show()
+
         else:
             QMessageBox.warning(self, "Erreur", "Identifiants invalides.")

@@ -1,150 +1,139 @@
-from ast import Dict
+from PyQt6.QtWidgets import QMessageBox, QInputDialog, QListWidget, QDialog, QVBoxLayout, QPushButton
 from datetime import datetime, timedelta
 from python.models import Film, Salle_info, Representation
 import storage
 
 
-def add_movie():
-    titre = input("Titre du film: ")
-    duree = int(input("Durée (en minutes): "))
-    categorie = input("Catégorie: ")
-    age_min = int(input("Âge minimum: "))
-    nbr_representations = int(input("Nombre de représentations par jours: "))
+def gui_add_movie():
+    titre, ok = QInputDialog.getText(None, "Ajouter un film", "Titre :")
+    if not ok or not titre:
+        return
+
+    duree, ok = QInputDialog.getInt(None, "Ajouter un film", "Durée (minutes) :", 90, 1, 999)
+    if not ok:
+        return
+
+    categorie, ok = QInputDialog.getText(None, "Ajouter un film", "Catégorie :")
+    if not ok or not categorie:
+        return
+
+    age_min, ok = QInputDialog.getInt(None, "Ajouter un film", "Âge minimum :", 0, 0, 99)
+    if not ok:
+        return
+
+    nbr, ok = QInputDialog.getInt(None, "Ajouter un film", "Nombre de représentations par jour :", 1, 1, 10)
+    if not ok:
+        return
+
     horaires = []
-    for i in range(nbr_representations):
-        horaire = input(f"Horaire de la représentation {i+1} (HH:MM): ")
-        horaires.append(horaire)
+    for i in range(nbr):
+        h, ok = QInputDialog.getText(None, "Horaires", f"Horaire {i+1} (HH:MM) :")
+        if not ok or not h:
+            return
+        horaires.append(h)
+
     film = Film(titre=titre, duree=duree, categorie=categorie, age_min=age_min, horaires=horaires)
     storage.add_film(film)
-    print(f"Film '{titre}' ajouté avec succès.")
-    input("Appuyez sur Entrée pour revenir au menu...")
 
-def add_room():
-    numero = int(input("Numéro de la salle: "))
-    nombre_rangees_total = int(input("Nombre total de rangées: "))
-    nombre_rangees_vip = int(input("Nombre de rangées VIP: "))
-    nombre_colonnes = int(input("Nombre de colonnes: "))
-    salle = Salle_info(numero=numero, nombre_rangees_total=nombre_rangees_total,
-                    nombre_rangees_vip=nombre_rangees_vip, nombre_colonnes=nombre_colonnes)
+    QMessageBox.information(None, "Succès", f"Film '{titre}' ajouté.")
+
+
+def gui_add_room():
+    numero, ok = QInputDialog.getInt(None, "Salle", "Numéro de la salle :", 1, 1, 999)
+    if not ok:
+        return
+
+    total, ok = QInputDialog.getInt(None, "Salle", "Nombre total de rangées :", 5, 1, 50)
+    if not ok:
+        return
+
+    vip, ok = QInputDialog.getInt(None, "Salle", "Nombre de rangées VIP :", 0, 0, total)
+    if not ok:
+        return
+
+    colonnes, ok = QInputDialog.getInt(None, "Salle", "Nombre de colonnes :", 5, 1, 50)
+    if not ok:
+        return
+
+    salle = Salle_info(numero=numero, nombre_rangees_total=total,
+                       nombre_rangees_vip=vip, nombre_colonnes=colonnes)
     storage.add_salle(salle)
-    print(f"Salle numéro {numero} ajoutée avec succès.")
-    input("Appuyez sur Entrée pour revenir au menu...")
+    QMessageBox.information(None, "Succès", f"Salle {numero} ajoutée.")
 
 
-def calculer_heure_fin(horaire_debut: str, duree: int) -> str:
-    debut = datetime.strptime(horaire_debut, "%H:%M")
-    fin = debut + timedelta(minutes=duree)
-    return fin.strftime("%H:%M")
-
-def add_representation():
+def gui_add_representation():
     films = storage.list_films()
     if not films:
-        print("Aucun film disponible.")
-        input("\nAppuyez sur Entrée pour revenir au menu...")
-        return
-    print("\nFilms disponibles :")
-    for i, film in enumerate(films, start=1):
-        print(f"{i}. {film.titre}")
-
-    while True:
-        try:
-            choix_film = int(input("\nEntrez le numéro du film : "))
-            if 1 <= choix_film <= len(films):
-                film = films[choix_film - 1]
-                break
-            else:
-                print(f"Veuillez entrer un numéro entre 1 et {len(films)}.")
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
-
-    horaires = getattr(film, "horaires", [])
-    if not horaires:
-        print(f"\nAucun horaire disponible pour le film '{film.titre}'.")
+        QMessageBox.warning(None, "Erreur", "Aucun film disponible.")
         return
 
-    print(f"\nHoraires disponibles pour '{film.titre}' :")
-    for i, h in enumerate(horaires, start=1):
-        print(f"{i}. {h}")
+    dialog = QDialog()
+    dialog.setWindowTitle("Choisir un film")
+    layout = QVBoxLayout(dialog)
+    list_widget = QListWidget()
+    for f in films:
+        list_widget.addItem(f"{f.titre}")
+    layout.addWidget(list_widget)
 
-    while True:
-        try:
-            choix_h = int(input("\nEntrez le numéro de l’horaire : "))
-            if 1 <= choix_h <= len(horaires):
-                horaire = horaires[choix_h - 1]
-                break
-            else:
-                print(f"Veuillez entrer un numéro entre 1 et {len(horaires)}.")
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
+    btn_ok = QPushButton("Ok")
+    layout.addWidget(btn_ok)
+    btn_ok.clicked.connect(dialog.accept)
 
-    horaire_fin=calculer_heure_fin(horaire, film.duree)
-    representation_id = f"{film.id}_{horaire}_{horaire_fin}"
-    if storage.get_representation(representation_id):
-        print(f"\n❌ La représentation pour '{film.titre}' à {horaire} existe déjà.")
-        input("\nAppuyez sur Entrée pour revenir au menu...")
-        return
-    representation = Representation(film_id=film.id, horaire=horaire, id=representation_id, horaire_fin=horaire_fin)
-    storage.add_representation(representation)
-
-    print(f"\n✅ Représentation '{representation_id}' ajoutée avec succès pour '{film.titre}' à {horaire}.")
-    input("\nAppuyez sur Entrée pour revenir au menu...")
-
-
-def assign_representation_to_room():
-    """Permet d'assigner une représentation à une salle via une sélection numérotée."""
-    representations = storage.list_representations()
-    if not representations:
-        print("Aucune représentation disponible.")
-        input("\nAppuyez sur Entrée pour revenir au menu...")
+    if dialog.exec() != QDialog.DialogCode.Accepted or list_widget.currentRow() < 0:
         return
 
-    print("\nReprésentations disponibles :")
-    for i, rep in enumerate(representations, start=1):
-        # On récupère le titre du film pour affichage plus clair
-        film = storage.get_film(rep.film_id)
-        film_titre = film.titre if film else "Film inconnu"
-        print(f"{i}. {film_titre} à {rep.horaire}")
+    film = films[list_widget.currentRow()]
 
-    # Choix de la représentation
-    while True:
-        try:
-            choix_rep = int(input("\nEntrez le numéro de la représentation : "))
-            if 1 <= choix_rep <= len(representations):
-                representation = representations[choix_rep - 1]
-                break
-            else:
-                print(f"Veuillez entrer un numéro entre 1 et {len(representations)}.")
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
+    if not film.horaires:
+        QMessageBox.warning(None, "Erreur", "Ce film n'a pas d'horaires.")
+        return
 
-    # Liste des salles disponibles
+    horaire, ok = QInputDialog.getItem(None, "Horaire", "Choisir un horaire :", film.horaires, 0, False)
+    if not ok:
+        return
+
+    debut = datetime.strptime(horaire, "%H:%M")
+    fin = debut + timedelta(minutes=film.duree)
+    horaire_fin = fin.strftime("%H:%M")
+
+    rep_id = f"{film.id}_{horaire}_{horaire_fin}"
+
+    if storage.get_representation(rep_id):
+        QMessageBox.warning(None, "Erreur", "Cette représentation existe déjà.")
+        return
+
+    rep = Representation(film_id=film.id, horaire=horaire, id=rep_id, horaire_fin=horaire_fin)
+    storage.add_representation(rep)
+
+    QMessageBox.information(None, "Succès", "Représentation ajoutée.")
+
+
+def gui_assign_representation_to_room():
+    reps = storage.list_representations()
+    if not reps:
+        QMessageBox.warning(None, "Erreur", "Aucune représentation.")
+        return
+
+    films = {r.id: storage.get_film(r.film_id).titre for r in reps}
+
+    rep_labels = [f"{films[r.id]} ({r.horaire})" for r in reps]
+    rep_label, ok = QInputDialog.getItem(None, "Représentation", "Choisir :", rep_labels, 0, False)
+    if not ok:
+        return
+
+    rep = reps[rep_labels.index(rep_label)]
+
     salles = storage.list_salles()
     if not salles:
-        print("Aucune salle disponible.")
-        input("\nAppuyez sur Entrée pour revenir au menu...")
+        QMessageBox.warning(None, "Erreur", "Aucune salle.")
         return
 
-    print("\nSalles disponibles :")
-    for i, salle in enumerate(salles, start=1):
-        print(f"{i}. Salle {salle.numero}")
+    salle_labels = [f"Salle {s.numero}" for s in salles]
+    salle_label, ok = QInputDialog.getItem(None, "Salle", "Choisir :", salle_labels, 0, False)
+    if not ok:
+        return
 
-    # Choix de la salle
-    while True:
-        try:
-            choix_salle = int(input("\nEntrez le numéro de la salle : "))
-            if 1 <= choix_salle <= len(salles):
-                salle = salles[choix_salle - 1]
-                break
-            else:
-                print(f"Veuillez entrer un numéro entre 1 et {len(salles)}.")
-        except ValueError:
-            print("Veuillez entrer un nombre valide.")
+    salle = salles[salle_labels.index(salle_label)]
 
-    # Assignation
-    storage.assign_representation_to_room(representation.id, salle.id)
-
-    print(f"\n✅ Représentation '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
-    input("\nAppuyez sur Entrée pour revenir au menu...")
-
-# def make_room_map(representation: Representation) -> Dict[str, str]:
-        
+    storage.assign_representation_to_room(rep.id, salle.id)
+    QMessageBox.information(None, "Succès", "Représentation assignée.")

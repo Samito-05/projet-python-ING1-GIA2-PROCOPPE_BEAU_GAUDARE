@@ -1,27 +1,48 @@
-from python.visuals import clear_screen
-from python.admin_functions import add_movie, add_room, add_representation, assign_representation_to_room
+from PyQt6.QtWidgets import (
+    QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
+)
+from PyQt6.QtCore import Qt
 
-def admin_menu(admin_user):
-    while True:
-        clear_screen()
-        print(f"Menu Administration - {admin_user.prenom} {admin_user.nom} (role={admin_user.role})")
-        print("1) Ajouter un film")
-        print("2) Ajouter une salle")
-        print("3) Ajouter une représentation")
-        print("4) Attribuer une représentation à une salle")
-        print("0) Retour au menu principal")
-        print("\n")
-        choix = input("Choix: ").strip()
-        if choix == "1":
-            add_movie()
-        elif choix == "2":
-            add_room()
-        elif choix == "3":
-            add_representation()
-        elif choix == "4":
-            assign_representation_to_room()
-        elif choix == "0":
-            break
-        else:
-            print("Choix invalide.")
-            input("Appuyez sur Entrée pour revenir au menu...")
+from python.admin_functions import (
+    gui_add_movie,
+    gui_add_room,
+    gui_add_representation,
+    gui_assign_representation_to_room
+)
+
+class AdminMenu(QWidget):
+    def __init__(self, admin_user):
+        super().__init__()
+        self.admin_user = admin_user
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout()
+
+        title = QLabel(f"Administration - {self.admin_user.prenom} {self.admin_user.nom} (role={self.admin_user.role})")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title)
+
+        btn_add_movie = QPushButton("Ajouter un film")
+        btn_add_movie.clicked.connect(gui_add_movie)
+        layout.addWidget(btn_add_movie)
+
+        btn_add_room = QPushButton("Ajouter une salle")
+        btn_add_room.clicked.connect(gui_add_room)
+        layout.addWidget(btn_add_room)
+
+        btn_add_rep = QPushButton("Ajouter une représentation")
+        btn_add_rep.clicked.connect(gui_add_representation)
+        layout.addWidget(btn_add_rep)
+
+        btn_assign = QPushButton("Attribuer une représentation à une salle")
+        btn_assign.clicked.connect(gui_assign_representation_to_room)
+        layout.addWidget(btn_assign)
+
+        btn_back = QPushButton("Retour")
+        btn_back.clicked.connect(self.close)
+        layout.addWidget(btn_back)
+
+        self.setLayout(layout)
+        self.setWindowTitle("Panneau d'administration")
+        self.setFixedSize(400, 260)
