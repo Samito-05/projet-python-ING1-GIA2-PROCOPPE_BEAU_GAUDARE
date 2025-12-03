@@ -29,7 +29,7 @@ def load_db() -> Dict[str, List[Dict[str, Any]]]:
 
 def save_db(db: Dict[str, List[Dict[str, Any]]]):
     with DB_PATH.open('w', encoding='utf-8') as f:
-        json.dump(db, f, ensure_ascii=False, indent=2)
+        json.dump(db, f, ensure_ascii=False, indent=2, separators=(',', ':'))
 
 
 def list_films() -> List[Film]:
@@ -90,7 +90,55 @@ def assign_representation_to_room(representation_id: str, salle_id: str) -> None
                 id_representations.append(representation_id)
                 salle_dict['id_representations'] = id_representations
             break
+    # Create a Salles entry for this representation assignment so seating map is stored
+    # Find representation and salle_info objects
+    from python.models import Salles, Salle_info
+
+    rep = get_representation(representation_id)
+    # build seating map only if representation and salle info found
+    if rep is not None:
+        # get salle info object
+        salle_obj = None
+        for s in db.get('salle_info', []):
+            if s.get('id') == salle_id:
+                salle_obj = Salle_info.from_dict(s)
+                break
+        if salle_obj is not None:
+            # generate seating map on the representation instance
+            try:
+                rep.generate_map_from_salle(salle_obj)
+            except Exception:
+                # fallback: do nothing if generation fails
+                pass
+            # create a Salles entry specifically for this representation
+            db.setdefault('salles', [])
+            salles_entry = Salles(salle_id=salle_id, representation_id=[representation_id], seating_map=rep.seating_map)
+            db['salles'].append(salles_entry.to_dict())
+
     save_db(db)
+
+
+def add_salles_entry(salles_entry: Salles) -> None:
+    db = load_db()
+    db.setdefault('salles', [])
+    db['salles'].append(salles_entry.to_dict())
+    save_db(db)
+
+
+def get_salle_seating(salle_id: str, representation_id: str) -> Optional[Salles]:
+    db = load_db()
+    for s in db.get('salles', []):
+        # ensure structure matches: representation_id may be a list
+        rep_ids = s.get('representation_id') or s.get('representation_id') or s.get('representation_id', [])
+        # support different key naming if present
+        if s.get('salle_id') == salle_id and representation_id in rep_ids:
+            return Salles.from_dict(s)
+    return None
+
+
+def list_salles_entries() -> List[Salles]:
+    db = load_db()
+    return [Salles.from_dict(d) for d in db.get('salles', [])]
 
     
 def list_utilisateurs() -> List[Utilisateur]:

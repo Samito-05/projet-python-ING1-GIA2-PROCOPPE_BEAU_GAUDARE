@@ -107,6 +107,8 @@ class Representation:
     horaire: str
     horaire_fin: str
     id: str = field(default_factory=gen_id)
+    # seating_map is a 2D list: rows x cols containing 'O' (available) or 'X' (taken)
+    seating_map: List[List[str]] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -118,7 +120,20 @@ class Representation:
             horaire=d.get('horaire', ''),
             horaire_fin=d.get('horaire_fin', ''),
             id=d.get('id', gen_id()),
+            seating_map=d.get('seating_map', []),
         )
+
+    def generate_map_from_salle(self, salle: 'Salle_info') -> None:
+        """Populate self.seating_map based on the salle layout.
+
+        Seats are labelled 'A1', 'A2', ... where letters are rows.
+        Available seats are 'o', taken seats are 'x'.
+        """
+        rows = max(0, int(salle.nombre_rangees_total))
+        cols = max(0, int(salle.nombre_colonnes))
+        # create a rows x cols grid filled with 'o' for available
+        grid: List[List[str]] = [['o' for _ in range(cols)] for _ in range(rows)]
+        self.seating_map = grid
     
 @dataclass
 class Reservation:
@@ -147,7 +162,8 @@ class Reservation:
 class Salles:
     salle_id: str
     representation_id: List[str] = field(default_factory=list)
-    seating_map: Dict[str, str] = field(default_factory=dict)  # ex: {"A1": "reserved", "A2": "available"}
+    # seating_map is stored as a 2D list (rows x cols) of 'O'/'X'
+    seating_map: List[List[str]] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)

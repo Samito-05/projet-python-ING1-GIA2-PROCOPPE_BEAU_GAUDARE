@@ -1,4 +1,4 @@
-from ast import Dict
+from typing import Dict, Any, List
 from datetime import datetime, timedelta
 from python.models import Film, Salle_info, Representation
 import storage
@@ -146,5 +146,14 @@ def assign_representation_to_room():
     print(f"\n✅ Représentation '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
     input("\nAppuyez sur Entrée pour revenir au menu...")
 
-# def make_room_map(representation: Representation) -> Dict[str, str]:
-        
+def room_map(representation_id: str, salle_id: str) -> List[List[str]]:
+    """Retourne la carte 2D des sièges pour une représentation dans une salle.
+
+    La carte est une liste de listes (rows x cols) contenant 'o' (disponible) ou 'x' (réservé).
+    """
+    # Récupère l'entrée de salle correspondant à la représentation
+    salles_entry = storage.get_salle_seating(salle_id, representation_id)
+    if salles_entry is None:
+        print(f"Aucune carte trouvée pour la représentation {representation_id} dans la salle {salle_id}.")
+        return []
+    return getattr(salles_entry, 'seating_map', [])
