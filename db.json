@@ -1,30 +1,105 @@
 {
-  "films": [],
-  "salle_info": [],
-  "utilisateurs": [
+  "films":[
     {
-      "nom": "Procoppe",
-      "prenom": "Sam",
-      "date_naissance": "2005-05-20",
-      "nombre_resa": 0,
-      "role": "admin",
-      "email": "sam@gmail.com",
-      "password_salt": "3f26ac773c5208f51294d1a932f86c81",
-      "password_hash": "df28b7b63a3415eefbde4574619b766318085eda516a1c6fc969e0714e45f1a2",
-      "id": "bdc6efff-293d-43fb-9895-c1971972f318"
-    },
-    {
-      "nom": "beau",
-      "prenom": "alexis",
-      "date_naissance": "2005-11-28",
-      "nombre_resa": 0,
-      "role": "client",
-      "email": "alexis",
-      "password_salt": "732c4d4334bdf99fe9c8afd486315dc0",
-      "password_hash": "cb39af6cb6c50a2b4f9f981768011a7931f5a8c9226282ce107bcb72727ce022",
-      "id": "9e4d43dd-1d76-4277-bbc9-a2029c194e55"
+      "titre":"Titanic",
+      "duree":180,
+      "categorie":"Romance",
+      "age_min":12,
+      "horaires":[
+        "15:30"
+      ],
+      "id":"96ce286e-286f-4dc1-9c1c-04d70d3745f4"
     }
   ],
-  "representations": [],
-  "reservations": []
+  "salle_info":[
+    {
+      "numero":1,
+      "nombre_rangees_total":5,
+      "nombre_rangees_vip":0,
+      "nombre_colonnes":5,
+      "id_representations":[
+        "96ce286e-286f-4dc1-9c1c-04d70d3745f4_15:30_18:30"
+      ],
+      "id":"0f5e2086-ae10-4590-b853-2544510fa2f0"
+    }
+  ],
+  "utilisateurs":[
+    {
+      "nom":"Procoppe",
+      "prenom":"Sam",
+      "date_naissance":"2005-05-20",
+      "nombre_resa":0,
+      "role":"admin",
+      "email":"sam@gmail.com",
+      "password_salt":"3f26ac773c5208f51294d1a932f86c81",
+      "password_hash":"df28b7b63a3415eefbde4574619b766318085eda516a1c6fc969e0714e45f1a2",
+      "id":"bdc6efff-293d-43fb-9895-c1971972f318"
+    },
+    {
+      "nom":"Beau",
+      "prenom":"Alexis",
+      "date_naissance":"2005-11-28",
+      "nombre_resa":0,
+      "role":"client",
+      "email":"alexis@gmail.com",
+      "password_salt":"732c4d4334bdf99fe9c8afd486315dc0",
+      "password_hash":"cb39af6cb6c50a2b4f9f981768011a7931f5a8c9226282ce107bcb72727ce022",
+      "id":"9e4d43dd-1d76-4277-bbc9-a2029c194e55"
+    }
+  ],
+  "representations":[
+    {
+      "film_id":"96ce286e-286f-4dc1-9c1c-04d70d3745f4",
+      "horaire":"15:30",
+      "horaire_fin":"18:30",
+      "id":"96ce286e-286f-4dc1-9c1c-04d70d3745f4_15:30_18:30",
+      "seating_map":[]
+    }
+  ],
+  "reservations":[],
+  "salles":[
+    {
+      "salle_id":"0f5e2086-ae10-4590-b853-2544510fa2f0",
+      "representation_id":[
+        "96ce286e-286f-4dc1-9c1c-04d70d3745f4_15:30_18:30"
+      ],
+      "seating_map":[
+        [
+          "o",
+          "o",
+          "o",
+          "o",
+          "o"
+        ],
+        [
+          "o",
+          "o",
+          "o",
+          "o",
+          "o"
+        ],
+        [
+          "o",
+          "o",
+          "o",
+          "o",
+          "o"
+        ],
+        [
+          "o",
+          "o",
+          "o",
+          "o",
+          "o"
+        ],
+        [
+          "o",
+          "o",
+          "o",
+          "o",
+          "o"
+        ]
+      ]
+    }
+  ]
 }
