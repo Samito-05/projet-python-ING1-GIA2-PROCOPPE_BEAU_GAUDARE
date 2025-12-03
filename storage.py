@@ -187,3 +187,12 @@ def authenticate_admin(email: str, password: str) -> Optional[Utilisateur]:
     if u.verify_password(password):
         return u
     return None
+
+def update_utilisateur(user: Utilisateur) -> None:
+    db = load_db()
+    utilisateurs = db.get('utilisateurs', [])
+    for i, user_dict in enumerate(utilisateurs):
+        if user_dict.get('id') == user.id:
+            utilisateurs[i] = user.to_dict()
+            break
+    save_db(db)
