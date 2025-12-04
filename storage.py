@@ -61,6 +61,14 @@ def add_salle(salle: Salle_info) -> None:
     db['salle_info'].append(salle.to_dict())
     save_db(db)
 
+def get_salle(salle_id: str) -> Optional[Salle_info]:
+    """Get a specific salle by ID"""
+    db = load_db()
+    for salle_dict in db.get("salle_info", []):
+        if salle_dict.get("id") == salle_id:
+            return Salle_info.from_dict(salle_dict)
+    return None
+
 
 def list_representations() -> List[Representation]:
     db = load_db()
@@ -136,6 +144,17 @@ def get_salle_seating(salle_id: str, representation_id: str) -> Optional[Salles]
     return None
 
 
+def update_salle_seating(salle_id: str, representation_id: str, seating_map: List[List[str]]) -> None:
+    """Update the seating map for a specific representation in a salle"""
+    db = load_db()
+    for s in db.get('salles', []):
+        rep_ids = s.get('representation_id', [])
+        if s.get('salle_id') == salle_id and representation_id in rep_ids:
+            s['seating_map'] = seating_map
+            save_db(db)
+            return
+
+
 def list_salles_entries() -> List[Salles]:
     db = load_db()
     return [Salles.from_dict(d) for d in db.get('salles', [])]
@@ -196,3 +215,25 @@ def update_utilisateur(user: Utilisateur) -> None:
             utilisateurs[i] = user.to_dict()
             break
     save_db(db)
+
+# Reservation functions
+def add_reservation(reservation: Reservation) -> None:
+    """Add a new reservation to the database"""
+    db = load_db()
+    db.setdefault('reservations', [])
+    db['reservations'].append(reservation.to_dict())
+    save_db(db)
+
+def list_reservations() -> List[Reservation]:
+    """List all reservations"""
+    db = load_db()
+    return [Reservation.from_dict(d) for d in db.get('reservations', [])]
+
+def get_user_reservations(user_id: str) -> List[Reservation]:
+    """Get all reservations for a specific user"""
+    db = load_db()
+    reservations = []
+    for res_dict in db.get('reservations', []):
+        if res_dict.get('utilisateur_id') == user_id:
+            reservations.append(Reservation.from_dict(res_dict))
+    return reservations
