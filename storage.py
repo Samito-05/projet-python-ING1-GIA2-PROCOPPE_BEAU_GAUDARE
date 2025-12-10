@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+from datetime import datetime, timedelta
 
 from python.models import Film, Salle_info, Utilisateur, Representation, Reservation, Salles
 
@@ -88,9 +89,68 @@ def add_representation(representation: Representation) -> None:
     db['representations'].append(representation.to_dict())
     save_db(db)
 
-def assign_representation_to_room(representation_id: str, salle_id: str) -> None:
+
+def check_salle_availability(salle_id: str, new_rep: Representation) -> tuple[bool, Optional[str]]:
+    """
+    Vérifie si une salle est disponible pour une nouvelle représentation.
+    Retourne (disponible, message_erreur)
+    """
+    db = load_db()
+    
+    # Récupérer toutes les représentations assignées à cette salle
+    salle = get_salle(salle_id)
+    if not salle:
+        return False, "Salle introuvable"
+    
+    if not salle.id_representations:
+        return True, None
+    
+    # Convertir les horaires en datetime pour comparaison
+    try:
+        new_start = datetime.strptime(new_rep.horaire, "%H:%M")
+        new_end = datetime.strptime(new_rep.horaire_fin, "%H:%M")
+    except ValueError:
+        return False, "Format d'horaire invalide"
+    
+    # Vérifier les conflits avec les représentations existantes
+    for rep_id in salle.id_representations:
+        existing_rep = get_representation(rep_id)
+        if existing_rep:
+            try:
+                existing_start = datetime.strptime(existing_rep.horaire, "%H:%M")
+                existing_end = datetime.strptime(existing_rep.horaire_fin, "%H:%M")
+                
+                # Vérifier le chevauchement (avec 15 minutes de battement pour le nettoyage)
+                buffer = timedelta(minutes=15)
+                if not (new_end + buffer <= existing_start or new_start >= existing_end + buffer):
+                    film = get_film(existing_rep.film_id)
+                    film_titre = film.titre if film else "Film inconnu"
+                    return False, f"Conflit avec '{film_titre}' ({existing_rep.horaire}-{existing_rep.horaire_fin})"
+            except ValueError:
+                continue
+    
+    return True, None
+
+
+def assign_representation_to_room(representation_id: str, salle_id: str) -> tuple[bool, Optional[str]]:
+    """
+    Assigne une représentation à une salle avec vérification de disponibilité.
+    Retourne (succès, message_erreur)
+    """
+    # Vérifier que la représentation existe
+    rep = get_representation(representation_id)
+    if not rep:
+        return False, "Représentation introuvable"
+    
+    # Vérifier la disponibilité de la salle
+    available, error_msg = check_salle_availability(salle_id, rep)
+    if not available:
+        return False, error_msg
+    
     db = load_db()
     salles = db.get('salle_info', [])
+    
+    # Assigner la représentation à la salle
     for salle_dict in salles:
         if salle_dict.get('id') == salle_id:
             id_representations = salle_dict.get('id_representations', [])
@@ -98,32 +158,25 @@ def assign_representation_to_room(representation_id: str, salle_id: str) -> None
                 id_representations.append(representation_id)
                 salle_dict['id_representations'] = id_representations
             break
-    # Create a Salles entry for this representation assignment so seating map is stored
-    # Find representation and salle_info objects
-    from python.models import Salles, Salle_info
-
-    rep = get_representation(representation_id)
-    # build seating map only if representation and salle info found
-    if rep is not None:
-        # get salle info object
-        salle_obj = None
-        for s in db.get('salle_info', []):
-            if s.get('id') == salle_id:
-                salle_obj = Salle_info.from_dict(s)
-                break
-        if salle_obj is not None:
-            # generate seating map on the representation instance
-            try:
-                rep.generate_map_from_salle(salle_obj)
-            except Exception:
-                # fallback: do nothing if generation fails
-                pass
-            # create a Salles entry specifically for this representation
-            db.setdefault('salles', [])
-            salles_entry = Salles(salle_id=salle_id, representation_id=[representation_id], seating_map=rep.seating_map)
-            db['salles'].append(salles_entry.to_dict())
-
+    
+    # Créer une entrée Salles pour stocker la carte des sièges
+    salle_obj = get_salle(salle_id)
+    if salle_obj:
+        try:
+            rep.generate_map_from_salle(salle_obj)
+        except Exception:
+            pass
+        
+        db.setdefault('salles', [])
+        salles_entry = Salles(
+            salle_id=salle_id, 
+            representation_id=[representation_id], 
+            seating_map=rep.seating_map
+        )
+        db['salles'].append(salles_entry.to_dict())
+    
     save_db(db)
+    return True, None
 
 
 def add_salles_entry(salles_entry: Salles) -> None:
@@ -136,9 +189,7 @@ def add_salles_entry(salles_entry: Salles) -> None:
 def get_salle_seating(salle_id: str, representation_id: str) -> Optional[Salles]:
     db = load_db()
     for s in db.get('salles', []):
-        # ensure structure matches: representation_id may be a list
-        rep_ids = s.get('representation_id') or s.get('representation_id') or s.get('representation_id', [])
-        # support different key naming if present
+        rep_ids = s.get('representation_id', [])
         if s.get('salle_id') == salle_id and representation_id in rep_ids:
             return Salles.from_dict(s)
     return None
