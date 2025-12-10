@@ -261,7 +261,7 @@ def remove_representation():
 
 
 def assign_representation_to_room():
-    """Permet d'assigner une représentation à une salle via une sélection numérotée"""
+    """Permet d'assigner une représentation à une salle avec vérification des conflits"""
     representations = storage.list_representations()
     if not representations:
         print("\nAucune représentation disponible.")
@@ -272,7 +272,7 @@ def assign_representation_to_room():
     for i, rep in enumerate(representations, start=1):
         film = storage.get_film(rep.film_id)
         film_titre = film.titre if film else "Film inconnu"
-        print(f"{i}. {film_titre} à {rep.horaire}")
+        print(f"{i}. {film_titre} à {rep.horaire} (fin: {rep.horaire_fin})")
 
     # Choix de la représentation
     while True:
@@ -310,10 +310,15 @@ def assign_representation_to_room():
         except ValueError:
             print("Veuillez entrer un nombre valide.")
 
-    # Assignation
-    storage.assign_representation_to_room(representation.id, salle.id)
-
-    print(f"\n✅ Représentation '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
+    # Assignation avec vérification
+    success, error_msg = storage.assign_representation_to_room(representation.id, salle.id)
+    
+    if success:
+        print(f"\n✅ Représentation assignée à la salle numéro {salle.numero} avec succès.")
+    else:
+        print(f"\n❌ Erreur: {error_msg}")
+        print("La représentation n'a pas pu être assignée à cette salle.")
+    
     input("Appuyez sur Entrée pour revenir au menu...")
 
 
@@ -343,11 +348,10 @@ def view_all_reservations():
         film = storage.get_film(film_id)
         film_titre = film.titre if film else "Film inconnu"
         
-        print(f"\n📽️ {film_titre}")
+        print(f"\n🎞️ {film_titre}")
         print("-" * 50)
         
         for res in res_list:
-            user = storage.find_user_by_email("")  # Chercher par ID serait mieux
             # Trouver l'utilisateur
             users = storage.list_utilisateurs()
             user = None
@@ -434,7 +438,7 @@ def view_statistics():
     
     print(f"Revenus totaux: {total_revenus:.2f}€")
     print(f"Places réservées: {total_places_reservees}")
-    if capacite_totale > 0:
+    if capacite_totale > 0 and len(representations) > 0:
         taux_occupation = (total_places_reservees / (capacite_totale * len(representations))) * 100
         print(f"Taux d'occupation moyen: {taux_occupation:.1f}%")
     
