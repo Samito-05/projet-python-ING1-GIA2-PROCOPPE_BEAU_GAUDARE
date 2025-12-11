@@ -51,10 +51,11 @@ def menu():
 			try:
 				u = storage.create_user(nom=nom, prenom=prenom, date_naissance=dob, email=email, password=pwd)
 				print(f'Compte créé pour {u.email} (id={u.id})')
-				input('Appuyez sur Entrée pour revenir au menu...')
+				input('Appuyez sur Entrée pour continuer...')
 				user_menu(u)
 			except ValueError as e:
 				print('Erreur:', e)
+				input('Appuyez sur Entrée pour revenir au menu...')
 		elif choix == '4':
 			email = input('Email: ')
 			pwd = getpass.getpass('Mot de passe (caché): ')

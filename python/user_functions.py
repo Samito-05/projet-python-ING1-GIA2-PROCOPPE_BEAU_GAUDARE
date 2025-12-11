@@ -31,7 +31,7 @@ def calculate_ticket_price(salle: Salle_info, seat: str) -> float:
     if row_idx < salle.nombre_rangees_vip:
         return 15.0  # VIP price
     else:
-        return 10.0  # Normal price
+        return 9.0  # Normal price
 
 
 def list_films():
@@ -374,6 +374,7 @@ def buy_ticket(user: Utilisateur):
         utilisateur_id=user.id,
         salle_id=salle.id,
         film_id=film.id,
+        representation_id=representation.id,
         horaire=horaire,
         places=selected_seats
     )
@@ -485,12 +486,7 @@ def cancel_reservation(user: Utilisateur, reservations: List[Reservation]):
             return
         
         # Free up seats in seating map
-        representation = None
-        representations = storage.list_representations()
-        for rep in representations:
-            if rep.film_id == reservation.film_id and rep.horaire == reservation.horaire:
-                representation = rep
-                break
+        representation = storage.get_representation(reservation.representation_id)
         
         if representation:
             salles_entry = storage.get_salle_seating(reservation.salle_id, representation.id)
@@ -518,7 +514,6 @@ def cancel_reservation(user: Utilisateur, reservations: List[Reservation]):
         storage.update_utilisateur(user)
         
         print("\n✅ Réservation annulée avec succès.")
-        print("💰 Le remboursement sera effectué sous 3-5 jours ouvrables.")
         
     except ValueError:
         print("Entrée invalide.")

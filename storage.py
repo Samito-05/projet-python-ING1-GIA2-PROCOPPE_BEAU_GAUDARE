@@ -151,17 +151,6 @@ def get_salle_seating(salle_id: str, representation_id: str) -> Optional[Salles]
     return None
 
 
-def update_salle_seating(salle_id: str, representation_id: str, seating_map: List[List[str]]) -> None:
-    """Update the seating map for a specific representation in a salle"""
-    db = load_db()
-    for s in db.get('salles', []):
-        rep_ids = s.get('representation_id', [])
-        if s.get('salle_id') == salle_id and representation_id in rep_ids:
-            s['seating_map'] = seating_map
-            save_db(db)
-            return
-
-
 def list_salles_entries() -> List[Salles]:
     db = load_db()
     return [Salles.from_dict(d) for d in db.get('salles', [])]

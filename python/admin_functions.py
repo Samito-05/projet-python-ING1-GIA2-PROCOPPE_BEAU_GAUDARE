@@ -1,7 +1,8 @@
 from typing import Dict, Any, List
 from datetime import datetime, timedelta
 from collections import defaultdict
-from python.models import Film, Salle_info, Representation
+from python.models import Film, Salle_info, Representation, Reservation, Salles
+from python.visuals import clear_screen
 import storage
 
 
@@ -265,8 +266,72 @@ def assign_representation_to_room():
     
     input("Appuyez sur Entrée pour revenir au menu...")
 
-    print(f"\nReprésentations '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
-    input("\nAppuyez sur Entrée pour revenir au menu...")
+
+def remove_representation():
+    """Supprime une représentation existante"""
+    representations = storage.list_representations()
+    if not representations:
+        print("\nAucune représentation à supprimer.")
+        input("Appuyez sur Entrée...")
+        return
+
+    print("\n=== REPRÉSENTATIONS DISPONIBLES ===\n")
+    for i, rep in enumerate(representations, 1):
+        film = storage.get_film(rep.film_id)
+        film_titre = film.titre if film else "Film inconnu"
+        print(f"{i}. {film_titre} - {rep.id} ({rep.horaire} -> {getattr(rep, 'horaire_fin', '?')})")
+
+    try:
+        choix = int(input("\nEntrez le numéro de la représentation à supprimer (0 pour annuler): "))
+        if choix == 0:
+            return
+        if 1 <= choix <= len(representations):
+            rep = representations[choix - 1]
+
+            # Confirmer suppression
+            print(f"\nÊtes-vous sûr de vouloir supprimer la représentation '{rep.id}' ? (oui/non): ", end="")
+            confirmation = input().strip().lower()
+            if confirmation != "oui":
+                print("Suppression annulée.")
+                input("Appuyez sur Entrée...")
+                return
+
+            # Supprimer la représentation du DB
+            db = storage.load_db()
+            db['representations'] = [r for r in db.get('representations', []) if r.get('id') != rep.id]
+
+            # Supprimer les réservations associées
+            db['reservations'] = [r for r in db.get('reservations', []) if r.get('representation_id') != rep.id]
+
+            # Retirer la représentation des salles et des entrées de seating
+            for s in db.get('salle_info', []):
+                ids = s.get('id_representations', [])
+                if rep.id in ids:
+                    ids = [rid for rid in ids if rid != rep.id]
+                    s['id_representations'] = ids
+
+            # Supprimer les entrées de 'salles' (plans) qui référencent cette représentation
+            new_salles = []
+            for s in db.get('salles', []):
+                rep_ids = s.get('representation_id', [])
+                if rep.id in rep_ids:
+                    rep_ids = [rid for rid in rep_ids if rid != rep.id]
+                    if rep_ids:
+                        s['representation_id'] = rep_ids
+                        new_salles.append(s)
+                    # sinon, on supprime entièrement l'entrée
+                else:
+                    new_salles.append(s)
+            db['salles'] = new_salles
+
+            storage.save_db(db)
+            print(f"\n✅ Représentation '{rep.id}' supprimée avec succès.")
+        else:
+            print("Choix invalide.")
+    except ValueError:
+        print("Entrée invalide.")
+
+    input("Appuyez sur Entrée...")
 
 def view_all_reservations():
     """Affiche toutes les réservations avec possibilité de les gérer"""
@@ -319,7 +384,7 @@ def view_all_reservations():
                     if row_idx < salle.nombre_rangees_vip:
                         revenu_res += 15.0  # Prix VIP
                     else:
-                        revenu_res += 10.0  # Prix normal
+                        revenu_res += 9.0  # Prix normal
             
             print(f"  • {user_nom} ({user.email if user else 'N/A'})")
             print(f"    Salle {salle_num} - Horaire: {res.horaire}")
@@ -379,7 +444,7 @@ def view_statistics():
                 if row_idx < salle.nombre_rangees_vip:
                     total_revenus += 15.0
                 else:
-                    total_revenus += 10.0
+                    total_revenus += 9.0
         total_places_reservees += len(res.places)
     
     print(f"Revenus totaux: {total_revenus:.2f}€")
@@ -403,7 +468,7 @@ def view_statistics():
             for place in res.places:
                 row_letter = place[0]
                 row_idx = ord(row_letter) - 65
-                prix = 15.0 if row_idx < salle.nombre_rangees_vip else 10.0
+                prix = 15.0 if row_idx < salle.nombre_rangees_vip else 9.0
                 revenus_par_film[res.film_id] += prix
     
     # Trier par nombre de places réservées

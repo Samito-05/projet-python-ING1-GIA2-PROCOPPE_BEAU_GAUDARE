@@ -3,15 +3,15 @@
   "salle_info":[],
   "utilisateurs":[
     {
-      "nom":"sam",
-      "prenom":"sam",
+      "nom":"admins",
+      "prenom":"admins",
       "date_naissance":"2000-01-01",
-      "nombre_resa":0,
+      "nombre_resa":1,
       "role":"admin",
-      "email":"sam@gmail.com",
-      "password_salt":"3f26ac773c5208f51294d1a932f86c81",
-      "password_hash":"df28b7b63a3415eefbde4574619b766318085eda516a1c6fc969e0714e45f1a2",
-      "id":"bdc6efff-293d-43fb-9895-c1971972f318"
+      "email":"admins",
+      "password_salt":"06b106ff45f6fa8e9545029eeba7a0dd",
+      "password_hash":"cf168b12db960cd18514001e127081db4df8a562e587f5796ccf8ae278941d5d",
+      "id":"e3c4326b-16d2-490c-a03f-22b615179251"
     }
   ],
   "representations":[],

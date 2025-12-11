@@ -183,6 +183,7 @@ class Reservation:
     salle_id: str
     film_id: str
     horaire: str
+    representation_id: str = ''
     places: List[str] = field(default_factory=list)
     id: str = field(default_factory=gen_id)
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
@@ -197,6 +198,7 @@ class Reservation:
             salle_id=d.get('salle_id', ''),
             film_id=d.get('film_id', ''),
             horaire=d.get('horaire', ''),
+            representation_id=d.get('representation_id', ''),
             places=d.get('places', []),
             id=d.get('id', gen_id()),
             created_at=d.get('created_at', datetime.now().isoformat()),
