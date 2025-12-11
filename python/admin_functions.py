@@ -80,13 +80,13 @@ def add_representation():
     horaire_fin=calculer_heure_fin(horaire, film.duree)
     representation_id = f"{film.id}_{horaire}_{horaire_fin}"
     if storage.get_representation(representation_id):
-        print(f"\n❌ La représentation pour '{film.titre}' à {horaire} existe déjà.")
+        print(f"\nLa représentation pour '{film.titre}' à {horaire} existe déjà.")
         input("\nAppuyez sur Entrée pour revenir au menu...")
         return
     representation = Representation(film_id=film.id, horaire=horaire, id=representation_id, horaire_fin=horaire_fin)
     storage.add_representation(representation)
 
-    print(f"\n✅ Représentation '{representation_id}' ajoutée avec succès pour '{film.titre}' à {horaire}.")
+    print(f"\nReprésentations '{representation_id}' ajoutée avec succès pour '{film.titre}' à {horaire}.")
     input("\nAppuyez sur Entrée pour revenir au menu...")
 
 
@@ -143,7 +143,7 @@ def assign_representation_to_room():
     # Assignation
     storage.assign_representation_to_room(representation.id, salle.id)
 
-    print(f"\n✅ Représentation '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
+    print(f"\nReprésentations '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
     input("\nAppuyez sur Entrée pour revenir au menu...")
 
 def room_map(representation_id: str, salle_id: str) -> List[List[str]]:

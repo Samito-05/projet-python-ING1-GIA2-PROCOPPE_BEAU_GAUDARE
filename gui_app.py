@@ -41,7 +41,7 @@ class GUIApp:
 
         header_title = tk.Label(
             self.header_frame, 
-            text="🎬 CY-NEMA", 
+            text="CY-NEMA", 
             font=("Segoe UI", 32, 'bold'),
             bg='#1a1a1a',
             fg='#00d4ff'
@@ -97,7 +97,7 @@ class GUIApp:
         # Button
         btn = tk.Button(
             win,
-            text="✅ OK",
+            text="OK",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#00d4ff',
@@ -154,7 +154,7 @@ class GUIApp:
         # Button
         btn = tk.Button(
             win,
-            text="❌ Fermer",
+            text="Fermer",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff6b6b',
@@ -221,11 +221,11 @@ class GUIApp:
         sidebar_title.pack(pady=20)
 
         buttons_config = [
-            ("🎬 Voir les films", lambda: self.show_films()),
-            ("👤 Se connecter (User)", self.login_user),
-            ("✍️ Créer un compte", self.register_user),
-            ("🔐 Panneau Admin", self.login_admin),
-            ("❌ Quitter", self.root.quit),
+            (" Voir les films", lambda: self.show_films()),
+            (" Se connecter (User)", self.login_user),
+            (" Créer un compte", self.register_user),
+            (" Panneau Admin", self.login_admin),
+            (" Quitter", self.root.quit),
         ]
 
         for btn_text, cmd in buttons_config:
@@ -275,7 +275,7 @@ class GUIApp:
         if not films:
             no_films = tk.Label(
                 sf.scrollable_frame,
-                text="📭 Aucun film disponible",
+                text=" Aucun film disponible",
                 font=("Segoe UI", 12),
                 bg='#f5f5f5',
                 fg='#999999'
@@ -302,7 +302,7 @@ class GUIApp:
             )
             title.pack(anchor='w')
 
-            meta = f"⏱️ {film.duree}min  •  🎭 {film.categorie}  •  🔞 {film.age_min}+"
+            meta = f" {film.duree}min  •   {film.categorie}  •   {film.age_min}+"
             meta_label = tk.Label(
                 info_frame,
                 text=meta,
@@ -343,7 +343,7 @@ class GUIApp:
 
             title_label = tk.Label(
                 top_bar,
-                text="🎬 Films disponibles",
+                text="Films disponibles",
                 font=("Segoe UI", 16, 'bold'),
                 bg='#2d2d2d',
                 fg='#00d4ff'
@@ -387,7 +387,7 @@ class GUIApp:
         if not films:
             no_films = tk.Label(
                 sf.scrollable_frame,
-                text="📭 Aucun film disponible",
+                text=" Aucun film disponible",
                 font=("Segoe UI", 14),
                 bg='#f5f5f5',
                 fg='#999999'
@@ -416,7 +416,7 @@ class GUIApp:
             )
             title.pack(anchor='w')
 
-            meta = f"⏱️ {film.duree}min  •  🎭 {film.categorie}  •  🔞 {film.age_min}+"
+            meta = f" {film.duree}min  •   {film.categorie}  •   {film.age_min}+"
             meta_label = tk.Label(
                 info_frame,
                 text=meta,
@@ -442,7 +442,7 @@ class GUIApp:
 
             details_btn = tk.Button(
                 btn_frame,
-                text="📖 Voir détails",
+                text=" Voir détails",
                 command=lambda f=film: self.view_film(f),
                 font=("Segoe UI", 10, 'bold'),
                 bg='#00d4ff',
@@ -469,7 +469,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text=f"🎬 {film.titre}",
+            text=f"{film.titre}",
             font=("Segoe UI", 18, 'bold'),
             bg='#1a1a1a',
             fg='#00d4ff'
@@ -481,7 +481,7 @@ class GUIApp:
         frame.pack(fill='both', expand=True)
 
         # Film details
-        details_text = f"⏱️ Durée: {film.duree} min\n🎭 Catégorie: {film.categorie}\n🔞 Âge minimum: {film.age_min}+"
+        details_text = f" Durée: {film.duree} min\n Catégorie: {film.categorie}\n🔞 Âge minimum: {film.age_min}+"
         details_label = tk.Label(
             frame,
             text=details_text,
@@ -495,7 +495,7 @@ class GUIApp:
         if film.horaires:
             horaires_title = tk.Label(
                 frame,
-                text="📅 Horaires disponibles:",
+                text=" Horaires disponibles:",
                 font=("Segoe UI", 12, 'bold'),
                 bg='#f5f5f5',
                 fg='#1a1a1a'
@@ -508,7 +508,7 @@ class GUIApp:
                 
                 time_label = tk.Label(
                     row,
-                    text=f"🕐 {h}",
+                    text=f"{h}",
                     font=("Segoe UI", 11),
                     bg='white',
                     fg='#1a1a1a',
@@ -535,7 +535,7 @@ class GUIApp:
 
     def login_user(self):
         win = tk.Toplevel(self.root)
-        win.title("👤 Se connecter")
+        win.title(" Se connecter")
         win.geometry("450x400")
         win.config(bg='#f5f5f5')
         
@@ -546,7 +546,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="👤 Connexion Utilisateur",
+            text=" Connexion Utilisateur",
             font=("Segoe UI", 18, 'bold'),
             bg='#1a1a1a',
             fg='#00d4ff'
@@ -558,12 +558,12 @@ class GUIApp:
         main.pack(fill='both', expand=True, padx=30, pady=30)
         
         # Email
-        tk.Label(main, text="📧 Email", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
+        tk.Label(main, text=" Email", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
         email_entry = tk.Entry(main, font=("Segoe UI", 11), bg='white', fg='#1a1a1a', border=0, relief='solid')
         email_entry.pack(fill='x', ipady=8, pady=(0, 20))
         
         # Password
-        tk.Label(main, text="🔐 Mot de passe", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
+        tk.Label(main, text=" Mot de passe", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
         pwd_entry = tk.Entry(main, font=("Segoe UI", 11), bg='white', fg='#1a1a1a', border=0, relief='solid', show='•')
         pwd_entry.pack(fill='x', ipady=8, pady=(0, 30))
         
@@ -576,11 +576,11 @@ class GUIApp:
             u = storage.authenticate_user(email, pwd)
             if u:
                 self.user = u
-                messagebox.showinfo("Succès", f"✅ Bienvenue {u.prenom} {u.nom}")
+                messagebox.showinfo("Succès", f"Bienvenue {u.prenom} {u.nom}")
                 win.destroy()
                 self.build_user_dashboard()
             else:
-                messagebox.showerror("Erreur", "❌ Email ou mot de passe invalide")
+                messagebox.showerror("Erreur", "Email ou mot de passe invalide")
         
         # Buttons
         btn_frame = tk.Frame(main, bg='#f5f5f5')
@@ -588,7 +588,7 @@ class GUIApp:
         
         login_btn = tk.Button(
             btn_frame,
-            text="✅ Se connecter",
+            text=" Se connecter",
             command=submit,
             font=("Segoe UI", 11, 'bold'),
             bg='#00d4ff',
@@ -604,7 +604,7 @@ class GUIApp:
         
         cancel_btn = tk.Button(
             btn_frame,
-            text="❌ Annuler",
+            text=" Annuler",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff6b6b',
@@ -620,7 +620,7 @@ class GUIApp:
 
     def login_admin(self):
         win = tk.Toplevel(self.root)
-        win.title("🔐 Admin Login")
+        win.title(" Admin Login")
         win.geometry("450x400")
         win.config(bg='#f5f5f5')
         
@@ -631,7 +631,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="🔐 Panneau Administrateur",
+            text=" Panneau Administrateur",
             font=("Segoe UI", 18, 'bold'),
             bg='#ff9500',
             fg='white'
@@ -643,12 +643,12 @@ class GUIApp:
         main.pack(fill='both', expand=True, padx=30, pady=30)
         
         # Email
-        tk.Label(main, text="📧 Email", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
+        tk.Label(main, text=" Email", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
         email_entry = tk.Entry(main, font=("Segoe UI", 11), bg='white', fg='#1a1a1a', border=0, relief='solid')
         email_entry.pack(fill='x', ipady=8, pady=(0, 20))
         
         # Password
-        tk.Label(main, text="🔐 Mot de passe", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
+        tk.Label(main, text=" Mot de passe", font=("Segoe UI", 11, 'bold'), bg='#f5f5f5', fg='#1a1a1a').pack(anchor='w', pady=(0, 5))
         pwd_entry = tk.Entry(main, font=("Segoe UI", 11), bg='white', fg='#1a1a1a', border=0, relief='solid', show='•')
         pwd_entry.pack(fill='x', ipady=8, pady=(0, 30))
         
@@ -661,11 +661,11 @@ class GUIApp:
             u = storage.authenticate_admin(email, pwd)
             if u:
                 self.user = u
-                messagebox.showinfo("Succès", f"✅ Bienvenue admin {u.prenom} {u.nom}")
+                messagebox.showinfo("Succès", f" Bienvenue admin {u.prenom} {u.nom}")
                 win.destroy()
                 self.build_admin_dashboard()
             else:
-                messagebox.showerror("Erreur", "❌ Email ou mot de passe admin invalide")
+                messagebox.showerror("Erreur", "Email ou mot de passe admin invalide")
         
         # Buttons
         btn_frame = tk.Frame(main, bg='#f5f5f5')
@@ -673,7 +673,7 @@ class GUIApp:
         
         login_btn = tk.Button(
             btn_frame,
-            text="✅ Se connecter",
+            text=" Se connecter",
             command=submit,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff9500',
@@ -689,7 +689,7 @@ class GUIApp:
         
         cancel_btn = tk.Button(
             btn_frame,
-            text="❌ Annuler",
+            text=" Annuler",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff6b6b',
@@ -705,7 +705,7 @@ class GUIApp:
 
     def register_user(self):
         win = tk.Toplevel(self.root)
-        win.title("✍️ Créer un compte")
+        win.title(" Créer un compte")
         win.geometry("500x650")
         win.config(bg='#f5f5f5')
         
@@ -716,7 +716,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="✍️ Créer un compte",
+            text=" Créer un compte",
             font=("Segoe UI", 18, 'bold'),
             bg='#1a1a1a',
             fg='#00d4ff'
@@ -729,11 +729,11 @@ class GUIApp:
         
         entries = {}
         fields = [
-            ("👤 Nom", "nom"),
-            ("👤 Prénom", "prenom"),
-            ("🎂 Date de naissance (YYYY-MM-DD)", "date"),
-            ("📧 Email", "email"),
-            ("🔐 Mot de passe", "password")
+            (" Nom", "nom"),
+            (" Prénom", "prenom"),
+            (" Date de naissance (YYYY-MM-DD)", "date"),
+            (" Email", "email"),
+            (" Mot de passe", "password")
         ]
         
         for label, key in fields:
@@ -759,16 +759,16 @@ class GUIApp:
                 pwd = entries["password"].get()
                 
                 if not (nom and prenom and dob and email and pwd):
-                    messagebox.showerror("Erreur", "❌ Tous les champs sont requis")
+                    messagebox.showerror("Erreur", "Tous les champs sont requis")
                     return
                 
                 u = storage.create_user(nom=nom, prenom=prenom, date_naissance=dob, email=email, password=pwd)
-                messagebox.showinfo("Succès", f"✅ Compte créé: {u.email}")
+                messagebox.showinfo("Succès", f" Compte créé: {u.email}")
                 win.destroy()
                 self.user = u
                 self.build_user_dashboard()
             except ValueError as e:
-                messagebox.showerror("Erreur", f"❌ {str(e)}")
+                messagebox.showerror("Erreur", f"{str(e)}")
         
         # Buttons
         btn_frame = tk.Frame(main, bg='#f5f5f5')
@@ -776,7 +776,7 @@ class GUIApp:
         
         create_btn = tk.Button(
             btn_frame,
-            text="✅ Créer un compte",
+            text="Créer un compte",
             command=submit,
             font=("Segoe UI", 11, 'bold'),
             bg='#00d4ff',
@@ -792,7 +792,7 @@ class GUIApp:
         
         cancel_btn = tk.Button(
             btn_frame,
-            text="❌ Annuler",
+            text=" Annuler",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff6b6b',
@@ -817,7 +817,7 @@ class GUIApp:
 
         user_label = tk.Label(
             top,
-            text=f"👤 {self.user.prenom} {self.user.nom}",
+            text=f"{self.user.prenom} {self.user.nom}",
             font=("Segoe UI", 12, 'bold'),
             bg='#2d2d2d',
             fg='#00d4ff'
@@ -845,9 +845,9 @@ class GUIApp:
         nav.pack(fill='x', padx=15, pady=10)
 
         nav_buttons = [
-            ("🎬 Voir films", self.show_films),
-            ("📋 Mes réservations", self.view_my_reservations),
-            ("👨‍💼 Mon profil", self.view_profile),
+            (" Voir films", self.show_films),
+            (" Mes réservations", self.view_my_reservations),
+            (" Mon profil", self.view_profile),
         ]
 
         for btn_text, cmd in nav_buttons:
@@ -896,7 +896,7 @@ class GUIApp:
 
         admin_label = tk.Label(
             top,
-            text=f"👑 Admin: {self.user.prenom} {self.user.nom}",
+            text=f" Admin: {self.user.prenom} {self.user.nom}",
             font=("Segoe UI", 12, 'bold'),
             bg='#2d2d2d',
             fg='#ff9500'
@@ -924,11 +924,11 @@ class GUIApp:
         nav.pack(fill='x', padx=15, pady=10)
 
         nav_buttons = [
-            ("➕ Ajouter film", self.gui_add_film),
-            ("🏢 Ajouter salle", self.gui_add_room),
-            ("🎬 Ajouter représentation", self.gui_add_representation),
-            ("🎯 Assigner représentation", self.gui_assign_representation),
-            ("📊 Voir réservations", self.gui_view_all_reservations),
+            (" Ajouter film", self.gui_add_film),
+            (" Ajouter salle", self.gui_add_room),
+            (" Ajouter représentation", self.gui_add_representation),
+            (" Assigner représentation", self.gui_assign_representation),
+            (" Voir réservations", self.gui_view_all_reservations),
         ]
 
         for btn_text, cmd in nav_buttons:
@@ -981,7 +981,7 @@ class GUIApp:
         if user_age < film.age_min:
             messagebox.showerror(
                 "Accès refusé",
-                f"❌ Vous devez avoir au minimum {film.age_min} ans pour regarder ce film.\nVotre âge: {user_age} ans"
+                f"Vous devez avoir au minimum {film.age_min} ans pour regarder ce film.\nVotre âge: {user_age} ans"
             )
             return
 
@@ -1016,7 +1016,7 @@ class GUIApp:
 
     def open_seat_selection(self, film, rep, salle, seating_map):
         win = tk.Toplevel(self.root)
-        win.title(f"🎬 Réserver — {film.titre} à {rep.horaire}")
+        win.title(f"Réserver — {film.titre} à {rep.horaire}")
         win.geometry("950x750")
         win.config(bg='#f5f5f5')
 
@@ -1027,7 +1027,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text=f"🎬 {film.titre} — {rep.horaire}",
+            text=f"{film.titre} — {rep.horaire}",
             font=("Segoe UI", 20, 'bold'),
             bg='#1a1a1a',
             fg='#00d4ff'
@@ -1072,9 +1072,9 @@ class GUIApp:
         
         # Legend items with VIP
         legend_items = [
-            ('#00d4ff', '💺 Disponible Normal', '9€'),
-            ('#d946ef', '⭐ VIP Disponible', '15€'),
-            ('#ff3333', '❌ Réservé'),
+            ('#00d4ff', 'Disponible Normal', '9€'),
+            ('#d946ef', 'VIP Disponible', '15€'),
+            ('#ff3333', 'Réservé'),
             ('#ffed4e', '✓ Sélectionné')
         ]
         
@@ -1226,7 +1226,7 @@ class GUIApp:
             self.user.nombre_resa += 1
             storage.update_utilisateur(self.user)
             
-            self.show_success_popup('✅ Réservation confirmée!', f'Places: {", ".join(seats)}\nPrix total: {total_price}€')
+            self.show_success_popup('Réservation confirmée!', f'Places: {", ".join(seats)}\nPrix total: {total_price}€')
             win.destroy()
 
         btn_frame = tk.Frame(inner, bg='#f5f5f5')
@@ -1234,7 +1234,7 @@ class GUIApp:
         
         confirm_btn = tk.Button(
             btn_frame,
-            text="✅ Confirmer la réservation",
+            text="Confirmer la réservation",
             command=confirm,
             font=("Segoe UI", 11, 'bold'),
             bg='#00d4ff',
@@ -1250,7 +1250,7 @@ class GUIApp:
         
         cancel_btn = tk.Button(
             btn_frame,
-            text="❌ Annuler",
+            text=" Annuler",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff6b6b',
@@ -1271,10 +1271,10 @@ class GUIApp:
 
     def view_my_reservations(self):
         if not self.user:
-            messagebox.showinfo('Info', '❌ Connectez-vous d\'abord')
+            messagebox.showinfo('Info', 'Connectez-vous d\'abord')
             return
         win = tk.Toplevel(self.root)
-        win.title('📋 Mes réservations')
+        win.title(' Mes réservations')
         win.geometry('700x600')
         win.config(bg='#f5f5f5')
 
@@ -1313,7 +1313,7 @@ class GUIApp:
         if not reservations:
             no_res = tk.Label(
                 scrollable_frame,
-                text='📭 Aucune réservation pour le moment',
+                text=' Aucune réservation pour le moment',
                 font=("Segoe UI", 13, 'bold'),
                 bg='#f5f5f5',
                 fg='#999999'
@@ -1337,7 +1337,7 @@ class GUIApp:
             
             title_label = tk.Label(
                 card_header,
-                text=f"  🎬 {film_title}",
+                text=f"  {film_title}",
                 font=("Segoe UI", 13, 'bold'),
                 bg='#00d4ff',
                 fg='#1a1a1a'
@@ -1347,7 +1347,7 @@ class GUIApp:
             # Infos réservation
             info_label = tk.Label(
                 content,
-                text=f"🕐 Horaire: {res.horaire}",
+                text=f"Horaire: {res.horaire}",
                 font=("Segoe UI", 11),
                 bg='white',
                 fg='#1a1a1a'
@@ -1356,7 +1356,7 @@ class GUIApp:
             
             places_label = tk.Label(
                 content,
-                text=f"💺 Places: {', '.join(res.places)}",
+                text=f"Places: {', '.join(res.places)}",
                 font=("Segoe UI", 11),
                 bg='white',
                 fg='#1a1a1a'
@@ -1365,7 +1365,7 @@ class GUIApp:
 
             btn = tk.Button(
                 content,
-                text="❌ Annuler cette réservation",
+                text="Annuler cette réservation",
                 command=lambda r=res: self.cancel_reservation(r, win),
                 font=("Segoe UI", 10, 'bold'),
                 bg='#ff6b6b',
@@ -1451,10 +1451,10 @@ class GUIApp:
         entries = {}
 
         profile_fields = [
-            ("👤 Nom", "nom", self.user.nom),
-            ("📝 Prénom", "prenom", self.user.prenom),
-            ("📧 Email", "email", self.user.email),
-            ("🎂 Date de naissance", "date_naissance", self.user.date_naissance),
+            ("Nom", "nom", self.user.nom),
+            (" Prénom", "prenom", self.user.prenom),
+            (" Email", "email", self.user.email),
+            (" Date de naissance", "date_naissance", self.user.date_naissance),
         ]
 
         # Créer les champs éditables
@@ -1498,7 +1498,7 @@ class GUIApp:
                 storage.update_utilisateur(self.user)
                 
                 # Message de succès
-                messagebox.showinfo('Succès', '✅ Profil mis à jour avec succès!')
+                messagebox.showinfo('Succès', 'Profil mis à jour avec succès!')
                 win.destroy()
                 
                 # Rafraîchir le dashboard pour appliquer les changements partout
@@ -1512,7 +1512,7 @@ class GUIApp:
         # Bouton Enregistrer
         save_btn = tk.Button(
             btn_frame,
-            text="💾 Enregistrer",
+            text="Enregistrer",
             command=save_profile,
             font=("Segoe UI", 11, 'bold'),
             bg='#00d4ff',
@@ -1529,7 +1529,7 @@ class GUIApp:
         # Bouton Annuler
         cancel_btn = tk.Button(
             btn_frame,
-            text="❌ Annuler",
+            text=" Annuler",
             command=win.destroy,
             font=("Segoe UI", 11, 'bold'),
             bg='#ff6b6b',
@@ -1561,7 +1561,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="➕ Ajouter un nouveau film",
+            text=" Ajouter un nouveau film",
             font=("Segoe UI", 16, 'bold'),
             bg='#ff9500',
             fg='white'
@@ -1602,7 +1602,7 @@ class GUIApp:
             try:
                 duree = int(entries['Durée (min)'].get())
             except Exception:
-                messagebox.showerror('Erreur', '❌ Durée invalide')
+                messagebox.showerror('Erreur', 'Durée invalide')
                 return
             categorie = entries['Catégorie'].get().strip()
             try:
@@ -1612,7 +1612,7 @@ class GUIApp:
             horaires = [h.strip() for h in entries['Horaires (séparés par ,)'].get().split(',') if h.strip()]
             film = Film(titre=titre, duree=duree, categorie=categorie, age_min=age_min, horaires=horaires)
             storage.add_film(film)
-            messagebox.showinfo('Succès', f'✅ Film "{titre}" ajouté')
+            messagebox.showinfo('Succès', f'Film "{titre}" ajouté')
             win.destroy()
 
         submit_btn = tk.Button(
@@ -1687,14 +1687,14 @@ class GUIApp:
                 nbr_vip = int(entries['Nombre rangées VIP'].get())
                 nbr_col = int(entries['Nombre colonnes'].get())
             except Exception:
-                messagebox.showerror('Erreur', '❌ Valeurs invalides')
+                messagebox.showerror('Erreur', 'Valeurs invalides')
                 return
             if nbr_vip > nbr_r:
-                messagebox.showerror('Erreur', '❌ Rangées VIP > total')
+                messagebox.showerror('Erreur', 'Rangées VIP > total')
                 return
             salle = Salle_info(numero=numero, nombre_rangees_total=nbr_r, nombre_rangees_vip=nbr_vip, nombre_colonnes=nbr_col)
             storage.add_salle(salle)
-            messagebox.showinfo('Succès', f'✅ Salle {numero} ajoutée')
+            messagebox.showinfo('Succès', f'Salle {numero} ajoutée')
             win.destroy()
 
         submit_btn = tk.Button(
@@ -1726,7 +1726,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="🎬 Ajouter une représentation",
+            text="Ajouter une représentation",
             font=("Segoe UI", 16, 'bold'),
             bg='#ff9500',
             fg='white'
@@ -1738,7 +1738,7 @@ class GUIApp:
 
         films = storage.list_films()
         if not films:
-            messagebox.showerror('Erreur', '❌ Aucun film disponible')
+            messagebox.showerror('Erreur', 'Aucun film disponible')
             return
 
         # Film selection
@@ -1792,26 +1792,26 @@ class GUIApp:
             horaire = horaire_ent.get().strip()
             film = next((f for f in films if f.titre == titre), None)
             if not film:
-                messagebox.showerror('Erreur', '❌ Film invalide')
+                messagebox.showerror('Erreur', 'Film invalide')
                 return
             try:
                 horaire_fin = (datetime.strptime(horaire, '%H:%M') + timedelta(minutes=film.duree)).strftime('%H:%M')
             except:
-                messagebox.showerror('Erreur', '❌ Format d\'horaire invalide (HH:MM)')
+                messagebox.showerror('Erreur', 'Format d\'horaire invalide (HH:MM)')
                 return
             rep_id = f"{film.id}_{horaire}_{horaire_fin}"
             if storage.get_representation(rep_id):
-                messagebox.showerror('Erreur', '❌ Représentation existe déjà')
+                messagebox.showerror('Erreur', 'Représentation existe déjà')
                 return
             rep = Representation(film_id=film.id, horaire=horaire, id=rep_id, horaire_fin=horaire_fin)
             storage.add_representation(rep)
-            messagebox.showinfo('Succès', '✅ Représentation ajoutée')
+            messagebox.showinfo('Succès', 'Représentation ajoutée')
             win.destroy()
             self.build_admin_dashboard()  # Rafraîchir le tableau de bord admin
 
         submit_btn = tk.Button(
             frm,
-            text="✅ Ajouter",
+            text="Ajouter",
             command=submit,
             font=("Segoe UI", 10, 'bold'),
             bg='#ff9500',
@@ -1838,7 +1838,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="🎯 Assigner une représentation",
+            text=" Assigner une représentation",
             font=("Segoe UI", 16, 'bold'),
             bg='#ff9500',
             fg='white'
@@ -1851,7 +1851,7 @@ class GUIApp:
         reps = storage.list_representations()
         salles = storage.list_salles()
         if not reps or not salles:
-            messagebox.showerror('Erreur', '❌ Représentations ou salles manquantes')
+            messagebox.showerror('Erreur', 'Représentations ou salles manquantes')
             return
 
         # Representation selection
@@ -1904,7 +1904,7 @@ class GUIApp:
             sel_rep = rep_menu.get()
             sel_salle = salle_menu.get()
             if not sel_rep or not sel_salle:
-                messagebox.showerror('Erreur', '❌ Sélection invalide')
+                messagebox.showerror('Erreur', 'Sélection invalide')
                 return
             rep_idx = rep_menu.current()
             salle_idx = salle_menu.current()
@@ -1912,15 +1912,15 @@ class GUIApp:
             salle = salles[salle_idx]
             success, err = storage.assign_representation_to_room(rep.id, salle.id)
             if success:
-                messagebox.showinfo('Succès', '✅ Assignation effectuée')
+                messagebox.showinfo('Succès', 'Assignation effectuée')
                 win.destroy()
                 self.build_admin_dashboard()  # Rafraîchir le tableau de bord admin
             else:
-                messagebox.showerror('Erreur', f"❌ {err}")
+                messagebox.showerror('Erreur', f"{err}")
 
         submit_btn = tk.Button(
             frm,
-            text="✅ Assigner",
+            text="Assigner",
             command=submit,
             font=("Segoe UI", 10, 'bold'),
             bg='#ff9500',
@@ -1947,7 +1947,7 @@ class GUIApp:
         
         header_label = tk.Label(
             header,
-            text="📊 Toutes les réservations",
+            text="Toutes les réservations",
             font=("Segoe UI", 16, 'bold'),
             bg='#ff9500',
             fg='white'
@@ -1961,7 +1961,7 @@ class GUIApp:
         if not reservations:
             no_res = tk.Label(
                 frm,
-                text='📭 Aucune réservation',
+                text=' Aucune réservation',
                 font=("Segoe UI", 12),
                 bg='#f5f5f5',
                 fg='#999999'
@@ -1994,7 +1994,7 @@ class GUIApp:
             
             title_label = tk.Label(
                 content,
-                text=f"🎬 {film_title}",
+                text=f"{film_title}",
                 font=("Segoe UI", 12, 'bold'),
                 bg='white',
                 fg='#1a1a1a'
@@ -2003,7 +2003,7 @@ class GUIApp:
 
             info_label = tk.Label(
                 content,
-                text=f"👤 {user_name}  •  🕐 {r.horaire}  •  💺 Places: {', '.join(r.places)}",
+                text=f"{user_name}  •  {r.horaire}  •  Places: {', '.join(r.places)}",
                 font=("Segoe UI", 10),
                 bg='white',
                 fg='#666666'

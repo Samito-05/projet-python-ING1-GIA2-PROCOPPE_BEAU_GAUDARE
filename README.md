@@ -504,4 +504,3 @@ Le prix total est affiché en temps réel lors de la sélection des places.
 ## Licence
 
 Ce projet est fourni à titre éducatif.
->>>>>>> Stashed changes
