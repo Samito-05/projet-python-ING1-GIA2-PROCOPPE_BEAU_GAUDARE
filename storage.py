@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
+from typing import Dict, Any, List, Optional, Tuple
 
 from python.models import Film, Salle_info, Utilisateur, Representation, Reservation, Salles
 
@@ -89,94 +88,48 @@ def add_representation(representation: Representation) -> None:
     db['representations'].append(representation.to_dict())
     save_db(db)
 
-
-def check_salle_availability(salle_id: str, new_rep: Representation) -> tuple[bool, Optional[str]]:
-    """
-    Vérifie si une salle est disponible pour une nouvelle représentation.
-    Retourne (disponible, message_erreur)
-    """
-    db = load_db()
-    
-    # Récupérer toutes les représentations assignées à cette salle
-    salle = get_salle(salle_id)
-    if not salle:
-        return False, "Salle introuvable"
-    
-    if not salle.id_representations:
-        return True, None
-    
-    # Convertir les horaires en datetime pour comparaison
+def assign_representation_to_room(representation_id: str, salle_id: str) -> Tuple[bool, str]:
+    """Assigne une représentation à une salle et retourne (success, error_message)"""
     try:
-        new_start = datetime.strptime(new_rep.horaire, "%H:%M")
-        new_end = datetime.strptime(new_rep.horaire_fin, "%H:%M")
-    except ValueError:
-        return False, "Format d'horaire invalide"
-    
-    # Vérifier les conflits avec les représentations existantes
-    for rep_id in salle.id_representations:
-        existing_rep = get_representation(rep_id)
-        if existing_rep:
-            try:
-                existing_start = datetime.strptime(existing_rep.horaire, "%H:%M")
-                existing_end = datetime.strptime(existing_rep.horaire_fin, "%H:%M")
-                
-                # Vérifier le chevauchement (avec 15 minutes de battement pour le nettoyage)
-                buffer = timedelta(minutes=15)
-                if not (new_end + buffer <= existing_start or new_start >= existing_end + buffer):
-                    film = get_film(existing_rep.film_id)
-                    film_titre = film.titre if film else "Film inconnu"
-                    return False, f"Conflit avec '{film_titre}' ({existing_rep.horaire}-{existing_rep.horaire_fin})"
-            except ValueError:
-                continue
-    
-    return True, None
-
-
-def assign_representation_to_room(representation_id: str, salle_id: str) -> tuple[bool, Optional[str]]:
-    """
-    Assigne une représentation à une salle avec vérification de disponibilité.
-    Retourne (succès, message_erreur)
-    """
-    # Vérifier que la représentation existe
-    rep = get_representation(representation_id)
-    if not rep:
-        return False, "Représentation introuvable"
-    
-    # Vérifier la disponibilité de la salle
-    available, error_msg = check_salle_availability(salle_id, rep)
-    if not available:
-        return False, error_msg
-    
-    db = load_db()
-    salles = db.get('salle_info', [])
-    
-    # Assigner la représentation à la salle
-    for salle_dict in salles:
-        if salle_dict.get('id') == salle_id:
-            id_representations = salle_dict.get('id_representations', [])
-            if representation_id not in id_representations:
-                id_representations.append(representation_id)
-                salle_dict['id_representations'] = id_representations
-            break
-    
-    # Créer une entrée Salles pour stocker la carte des sièges
-    salle_obj = get_salle(salle_id)
-    if salle_obj:
+        db = load_db()
+        
+        # Vérifier que la salle existe
+        salle_obj = None
+        salles = db.get('salle_info', [])
+        for salle_dict in salles:
+            if salle_dict.get('id') == salle_id:
+                salle_obj = Salle_info.from_dict(salle_dict)
+                # Ajouter la représentation à la liste
+                id_representations = salle_dict.get('id_representations', [])
+                if representation_id not in id_representations:
+                    id_representations.append(representation_id)
+                    salle_dict['id_representations'] = id_representations
+                break
+        
+        if salle_obj is None:
+            return False, "Salle non trouvée"
+        
+        # Vérifier que la représentation existe
+        rep = get_representation(representation_id)
+        if rep is None:
+            return False, "Représentation non trouvée"
+        
+        # Générer le plan de salle
         try:
             rep.generate_map_from_salle(salle_obj)
-        except Exception:
-            pass
+        except Exception as e:
+            return False, f"Erreur lors de la génération du plan: {str(e)}"
         
+        # Créer une entrée Salles pour cette assignation
+        from python.models import Salles
         db.setdefault('salles', [])
-        salles_entry = Salles(
-            salle_id=salle_id, 
-            representation_id=[representation_id], 
-            seating_map=rep.seating_map
-        )
+        salles_entry = Salles(salle_id=salle_id, representation_id=[representation_id], seating_map=rep.seating_map)
         db['salles'].append(salles_entry.to_dict())
-    
-    save_db(db)
-    return True, None
+        
+        save_db(db)
+        return True, "Assignation réussie"
+    except Exception as e:
+        return False, f"Erreur: {str(e)}"
 
 
 def add_salles_entry(salles_entry: Salles) -> None:
@@ -187,9 +140,12 @@ def add_salles_entry(salles_entry: Salles) -> None:
 
 
 def get_salle_seating(salle_id: str, representation_id: str) -> Optional[Salles]:
+    """Récupère le plan de salle pour une représentation donnée"""
     db = load_db()
     for s in db.get('salles', []):
+        # Récupérer la liste des représentations (c'est une liste)
         rep_ids = s.get('representation_id', [])
+        # Vérifier si la salle_id correspond et si la représentation est assignée
         if s.get('salle_id') == salle_id and representation_id in rep_ids:
             return Salles.from_dict(s)
     return None
@@ -209,6 +165,25 @@ def update_salle_seating(salle_id: str, representation_id: str, seating_map: Lis
 def list_salles_entries() -> List[Salles]:
     db = load_db()
     return [Salles.from_dict(d) for d in db.get('salles', [])]
+
+
+def update_salle_seating(salle_id: str, representation_id: str, seating_map: List[List[str]]) -> None:
+    """Met à jour le plan de salle pour une représentation donnée"""
+    db = load_db()
+    salles_list = db.get('salles', [])
+    
+    for salles_entry in salles_list:
+        if salles_entry.get('salle_id') == salle_id:
+            rep_ids = salles_entry.get('representation_id', [])
+            if representation_id in rep_ids:
+                salles_entry['seating_map'] = seating_map
+                save_db(db)
+                return
+    
+    # If not found, create a new entry
+    salles_entry = Salles(salle_id=salle_id, representation_id=[representation_id], seating_map=seating_map)
+    salles_list.append(salles_entry.to_dict())
+    save_db(db)
 
     
 def list_utilisateurs() -> List[Utilisateur]:
@@ -267,21 +242,23 @@ def update_utilisateur(user: Utilisateur) -> None:
             break
     save_db(db)
 
-# Reservation functions
+
+def list_reservations() -> List[Reservation]:
+    """Retourne la liste de toutes les réservations"""
+    db = load_db()
+    return [Reservation.from_dict(d) for d in db.get('reservations', [])]
+
+
 def add_reservation(reservation: Reservation) -> None:
-    """Add a new reservation to the database"""
+    """Ajoute une nouvelle réservation"""
     db = load_db()
     db.setdefault('reservations', [])
     db['reservations'].append(reservation.to_dict())
     save_db(db)
 
-def list_reservations() -> List[Reservation]:
-    """List all reservations"""
-    db = load_db()
-    return [Reservation.from_dict(d) for d in db.get('reservations', [])]
 
 def get_user_reservations(user_id: str) -> List[Reservation]:
-    """Get all reservations for a specific user"""
+    """Retourne toutes les réservations d'un utilisateur"""
     db = load_db()
     reservations = []
     for res_dict in db.get('reservations', []):

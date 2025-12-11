@@ -193,71 +193,15 @@ def add_representation():
     representation_id = f"{film.id}_{horaire}_{horaire_fin}"
     
     if storage.get_representation(representation_id):
-        print(f"\n⚠️ La représentation pour '{film.titre}' à {horaire} existe déjà.")
-        input("Appuyez sur Entrée pour revenir au menu...")
+        print(f"\nLa représentation pour '{film.titre}' à {horaire} existe déjà.")
+        input("\nAppuyez sur Entrée pour revenir au menu...")
         return
     
     representation = Representation(film_id=film.id, horaire=horaire, id=representation_id, horaire_fin=horaire_fin)
     storage.add_representation(representation)
 
-    print(f"\n✅ Représentation '{representation_id}' ajoutée avec succès pour '{film.titre}' à {horaire}.")
-    input("Appuyez sur Entrée pour revenir au menu...")
-
-
-def remove_representation():
-    """Supprime une représentation existante"""
-    representations = storage.list_representations()
-    if not representations:
-        print("\nAucune représentation à supprimer.")
-        input("Appuyez sur Entrée...")
-        return
-    
-    print("\n=== REPRÉSENTATIONS DISPONIBLES ===\n")
-    for i, rep in enumerate(representations, 1):
-        film = storage.get_film(rep.film_id)
-        film_titre = film.titre if film else "Film inconnu"
-        print(f"{i}. {film_titre} à {rep.horaire} (fin: {rep.horaire_fin})")
-    
-    try:
-        choix = int(input("\nEntrez le numéro de la représentation à supprimer (0 pour annuler): "))
-        if choix == 0:
-            return
-        if 1 <= choix <= len(representations):
-            representation = representations[choix - 1]
-            
-            # Vérifier s'il y a des réservations
-            reservations = storage.list_reservations()
-            reservations_rep = [r for r in reservations if r.film_id == representation.film_id and r.horaire == representation.horaire]
-            
-            if reservations_rep:
-                print(f"\n⚠️ Attention: {len(reservations_rep)} réservation(s) existe(nt) pour cette représentation.")
-                print("Êtes-vous sûr de vouloir supprimer cette représentation? (oui/non): ", end="")
-                confirmation = input().strip().lower()
-                if confirmation != "oui":
-                    print("Suppression annulée.")
-                    input("Appuyez sur Entrée...")
-                    return
-            
-            # Supprimer la représentation
-            db = storage.load_db()
-            db['representations'] = [r for r in db.get('representations', []) if r.get('id') != representation.id]
-            
-            # Retirer de la liste des salles
-            for salle in db.get('salle_info', []):
-                if representation.id in salle.get('id_representations', []):
-                    salle['id_representations'].remove(representation.id)
-            
-            # Supprimer l'entrée de carte de sièges
-            db['salles'] = [s for s in db.get('salles', []) if representation.id not in s.get('representation_id', [])]
-            
-            storage.save_db(db)
-            print(f"\n✅ Représentation supprimée avec succès.")
-        else:
-            print("Choix invalide.")
-    except ValueError:
-        print("Entrée invalide.")
-    
-    input("Appuyez sur Entrée...")
+    print(f"\nReprésentations '{representation_id}' ajoutée avec succès pour '{film.titre}' à {horaire}.")
+    input("\nAppuyez sur Entrée pour revenir au menu...")
 
 
 def assign_representation_to_room():
@@ -321,6 +265,8 @@ def assign_representation_to_room():
     
     input("Appuyez sur Entrée pour revenir au menu...")
 
+    print(f"\nReprésentations '{representation.id}' assignée à la salle numéro {salle.numero} avec succès.")
+    input("\nAppuyez sur Entrée pour revenir au menu...")
 
 def view_all_reservations():
     """Affiche toutes les réservations avec possibilité de les gérer"""
