@@ -1807,6 +1807,7 @@ class GUIApp:
             storage.add_representation(rep)
             messagebox.showinfo('Succès', '✅ Représentation ajoutée')
             win.destroy()
+            self.build_admin_dashboard()  # Rafraîchir le tableau de bord admin
 
         submit_btn = tk.Button(
             frm,
@@ -1913,6 +1914,7 @@ class GUIApp:
             if success:
                 messagebox.showinfo('Succès', '✅ Assignation effectuée')
                 win.destroy()
+                self.build_admin_dashboard()  # Rafraîchir le tableau de bord admin
             else:
                 messagebox.showerror('Erreur', f"❌ {err}")
 
