@@ -101,6 +101,17 @@ class Utilisateur:
         key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100_000)
         return binascii.hexlify(key).decode('ascii') == self.password_hash
     
+    def calculate_age(self) -> int:
+        """Calcule l'âge de l'utilisateur à partir de sa date de naissance (format YYYY-MM-DD)"""
+        from datetime import datetime
+        try:
+            birth_date = datetime.strptime(self.date_naissance, '%Y-%m-%d')
+            today = datetime.now()
+            age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+            return age
+        except:
+            return 0
+    
 @dataclass
 class Representation:
     film_id: str
